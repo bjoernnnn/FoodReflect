@@ -211,12 +211,15 @@ Keine Schatten-Orgien, keine Verläufe, kein Konfetti.
 
   **Bekannte Einschränkung:** Die Textsuche (`search-a-licious`, search.openfoodfacts.org) war während der Implementierung nicht erreichbar (502) und deren Doku ebenfalls nicht. `OFFSearchResponse` dekodiert daher tolerant gegen mehrere plausible Top-Level-Feldnamen (`hits`/`products`/`results`/`docs`) und ist nur gegen selbst gebaute Fixtures getestet, nicht gegen die echte API. Vor Phase 5 (Suche im Log-Sheet) gegen die dann erreichbare API verifizieren und ggf. Feldnamen/Schema in `OFFProductDTO`/`OFFSearchResponse` anpassen.
 
-### Phase 4 – Onboarding, Settings & Dashboard-Grundgerüst
-- [ ] DesignSystem: Tokens + Komponenten (`ProgressRing`, `MacroBar`, `CardBackground`, `PrimaryButton`)
-- [ ] Onboarding-Screen (Ziel-kcal → `SuggestMacrosUseCase` → speichern), `RootView`-Weiche
-- [ ] Settings: Ziele anzeigen/editieren, Auto-Vorschlag-Reset
-- [ ] `DashboardViewModel` (`@Observable`, `ViewState`) + Dashboard: Rest-kcal groß, konsumiert/Ziel, Makro-Balken, Tortendiagramm (Swift Charts `SectorMark`), heutige Einträge mit Swipe-to-delete
-- [ ] **DoD:** Onboarding → Dashboard-Flow läuft mit echten (leeren) Daten, Dark Mode ok
+### Phase 4 – Onboarding, Settings & Dashboard-Grundgerüst ✅
+- [x] DesignSystem: Tokens (`Spacing`, `ColorToken`, `TypographyToken`) + Komponenten (`ProgressRing`, `MacroBar`, `CardBackground`, `PrimaryButton`) + gemeinsames `ViewState<Value>`
+- [x] Onboarding-Screen (Ziel-kcal → `SuggestMacrosUseCase` → speichern), `RootView`-Weiche (Onboarding vs. Dashboard anhand vorhandener Ziele)
+- [x] Settings: Ziele anzeigen/editieren, Auto-Vorschlag-Reset
+- [x] `DashboardViewModel` (`@Observable`, `ViewState`) + Dashboard: Rest-kcal groß, konsumiert/Ziel, Makro-Balken, Tortendiagramm (Swift Charts `SectorMark`), heutige Einträge mit Swipe-to-delete
+- [x] `AppContainer` vollständig verdrahtet (ModelContainer mit App-Group-Fallback, alle Repositories, OFFClient)
+- [x] **DoD:** Onboarding → Dashboard-Flow läuft mit echten (leeren) Daten – im Simulator getestet (Screenshots: Onboarding, gespeicherte Ziele im Dashboard übernommen, Neuinstallation zeigt wieder Onboarding). 11 neue ViewModel-Tests. Dark-Mode-Check steht noch aus (Phase 8, Accessibility-Pass).
+
+  **Architektur-Korrektur unterwegs:** `DashboardView` hätte ursprünglich `FeatureSettings` importiert (Verstoß gegen „Features → Domain + DesignSystem"). Stattdessen nimmt es jetzt die Settings-Destination generisch als `@ViewBuilder`-Closure entgegen, injiziert vom Composition Root (`RootView`) – Features bleiben sich gegenseitig unbekannt.
 
 ### Phase 5 – Erfassen (Suche + Schnelleintrag)
 - [ ] Log-Sheet: fokussiertes Suchfeld, Debounce, Cache-first + OFF-Merge, gerankte Liste (Name, Marke, kcal/100 g)

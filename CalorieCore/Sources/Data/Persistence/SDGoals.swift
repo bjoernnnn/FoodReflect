@@ -4,7 +4,7 @@ import SwiftData
 /// Es existiert zur Laufzeit maximal eine Zeile (der aktuell aktive Zielsatz).
 @Model
 public final class SDGoals {
-    public var id: UUID = UUID()
+    public var id = UUID()
     public var dailyKcal: Int = 0
     public var proteinGrams: Int = 0
     public var carbsGrams: Int = 0

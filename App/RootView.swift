@@ -1,17 +1,34 @@
+import FeatureDashboard
+import FeatureSettings
 import SwiftUI
 
-/// Weiche zwischen Onboarding und Dashboard. Die tatsächliche Verzweigung
-/// (anhand gespeicherter Ziele) folgt in Phase 4.
+/// Weiche zwischen Onboarding und Dashboard, anhand ob bereits Ziele gespeichert sind.
 struct RootView: View {
-    var body: some View {
-        ContentUnavailableView(
-            "KalorienTracker",
-            systemImage: "flame",
-            description: Text("Projektgerüst – Onboarding/Dashboard folgen in Phase 4.")
-        )
-    }
-}
+    @Environment(AppContainer.self) private var container
+    @State private var hasCompletedOnboarding: Bool?
 
-#Preview {
-    RootView()
+    var body: some View {
+        Group {
+            switch hasCompletedOnboarding {
+            case nil:
+                ProgressView()
+            case false:
+                OnboardingView(goalsRepository: container.goalsRepository) {
+                    hasCompletedOnboarding = true
+                }
+            case true:
+                DashboardView(
+                    diaryRepository: container.diaryRepository,
+                    goalsRepository: container.goalsRepository
+                ) {
+                    SettingsView(goalsRepository: container.goalsRepository)
+                }
+            }
+        }
+        .task {
+            guard hasCompletedOnboarding == nil else { return }
+            let goals = try? await container.goalsRepository.currentGoals()
+            hasCompletedOnboarding = goals != nil
+        }
+    }
 }

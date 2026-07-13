@@ -6,7 +6,7 @@ import SwiftData
 /// unterstützt keine Enums mit Associated Values direkt als gespeicherte Properties).
 @Model
 public final class SDFood {
-    public var id: UUID = UUID()
+    public var id = UUID()
     public var name: String = ""
     public var brand: String?
     public var barcode: String?

@@ -6,8 +6,8 @@ import SwiftData
 /// Katalog-Lebenszyklus.
 @Model
 public final class SDDiaryEntry {
-    public var id: UUID = UUID()
-    public var consumedAt: Date = Date()
+    public var id = UUID()
+    public var consumedAt = Date()
     public var dayKey: String = ""
     public var foodName: String = ""
     public var amountGrams: Double = 0
