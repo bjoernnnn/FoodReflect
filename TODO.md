@@ -202,12 +202,14 @@ Keine Schatten-Orgien, keine Verläufe, kein Konfetti.
 - [x] Repository-Tests gegen In-Memory-Container
 - [x] **DoD:** Speichern/Laden/Löschen von Einträgen + Zielen funktioniert, Tests grün (14 Repository-Tests)
 
-### Phase 3 – Data (Open Food Facts)
-- [ ] `OFFClient`: `fetchProduct(barcode:)` + `search(query:)`, async/await, User-Agent, `fields`-Filter, 10-s-Timeout, typisierte Fehler
-- [ ] DTOs + Mapper → `Food` (Normalisierung auf 100 g; kJ→kcal falls nötig; unvollständige Produkte als solche markieren)
-- [ ] Cache-Strategie in `FoodCatalogRepository`: Remote-Treffer persistieren, `lastUsedAt`/`useCount` pflegen
-- [ ] Tests mit gemockten URLProtocol-Responses (echte OFF-Beispiel-JSONs als Fixtures)
-- [ ] **DoD:** Barcode einer echten Nutella-EAN liefert gemapptes `Food` (manuell verifizieren)
+### Phase 3 – Data (Open Food Facts) ✅
+- [x] `OFFClient`: `fetchProduct(barcode:)` + `search(query:)`, async/await, User-Agent, `fields`-Filter, 10-s-Timeout, typisierte Fehler
+- [x] DTOs + Mapper → `Food` (Normalisierung auf 100 g; kJ→kcal falls nötig; unvollständige Produkte werden über `kcalPer100g == 0` + `RankSearchResultsUseCase`-Completeness-Gewichtung statt eines eigenen Flags markiert)
+- [x] Cache-Strategie: neue `CachingFoodCatalogRepository` (Cache-Hit zuerst, sonst `FoodDataSource` + Persistieren via `SwiftDataFoodCatalogRepository`); `recordUsage` pflegt `lastUsedAt`/`useCount` (bereits Phase 2)
+- [x] Tests mit gemockten URLProtocol-Responses (echte, live abgerufene OFF-Nutella-JSON als Fixture)
+- [x] **DoD:** Barcode einer echten Nutella-EAN liefert gemapptes `Food` – live gegen die echte OFF-API verifiziert (curl) und als Fixture-Test abgesichert
+
+  **Bekannte Einschränkung:** Die Textsuche (`search-a-licious`, search.openfoodfacts.org) war während der Implementierung nicht erreichbar (502) und deren Doku ebenfalls nicht. `OFFSearchResponse` dekodiert daher tolerant gegen mehrere plausible Top-Level-Feldnamen (`hits`/`products`/`results`/`docs`) und ist nur gegen selbst gebaute Fixtures getestet, nicht gegen die echte API. Vor Phase 5 (Suche im Log-Sheet) gegen die dann erreichbare API verifizieren und ggf. Feldnamen/Schema in `OFFProductDTO`/`OFFSearchResponse` anpassen.
 
 ### Phase 4 – Onboarding, Settings & Dashboard-Grundgerüst
 - [ ] DesignSystem: Tokens + Komponenten (`ProgressRing`, `MacroBar`, `CardBackground`, `PrimaryButton`)
