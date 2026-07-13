@@ -4,7 +4,7 @@ import SwiftUI
 
 /// Eintragen oder Bearbeiten einer Gewichtsmessung: Zahl + Datum, Einheit kg.
 /// Mit `existingEntry` startet das Formular vorbefüllt im Bearbeiten-Modus.
-/// lb-Umschaltung ist bewusst Post-MVP (siehe todo2.md Phase 5).
+/// lb-Umschaltung ist bewusst Post-MVP (siehe TODO.md, Teil B Phase 5).
 struct WeightEntrySheet: View {
     let existingEntry: WeightEntry?
     let onSave: (Double, Date) async -> Void
