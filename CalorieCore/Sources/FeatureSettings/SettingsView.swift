@@ -14,9 +14,11 @@ public struct SettingsView: View {
     }
 
     public var body: some View {
-        content
-            .navigationTitle("Einstellungen")
-            .task { await viewModel.load() }
+        NavigationStack {
+            content
+                .navigationTitle("Einstellungen")
+                .task { await viewModel.load() }
+        }
     }
 
     @ViewBuilder

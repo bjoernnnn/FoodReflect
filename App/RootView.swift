@@ -1,10 +1,7 @@
-import FeatureDashboard
-import FeatureLog
-import FeatureScanner
 import FeatureSettings
 import SwiftUI
 
-/// Weiche zwischen Onboarding und Dashboard, anhand ob bereits Ziele gespeichert sind.
+/// Weiche zwischen Onboarding und der Tab-Navigation, anhand ob bereits Ziele gespeichert sind.
 struct RootView: View {
     @Environment(AppContainer.self) private var container
     @State private var hasCompletedOnboarding: Bool?
@@ -19,30 +16,7 @@ struct RootView: View {
                     hasCompletedOnboarding = true
                 }
             case true:
-                DashboardView(
-                    diaryRepository: container.diaryRepository,
-                    goalsRepository: container.goalsRepository,
-                    widgetRefreshing: container.widgetRefreshing,
-                    settingsDestination: {
-                        SettingsView(goalsRepository: container.goalsRepository, widgetRefreshing: container.widgetRefreshing)
-                    },
-                    logSheetDestination: {
-                        LogSheetView(
-                            foodCatalogRepository: container.foodCatalogRepository,
-                            foodDataSource: container.foodDataSource,
-                            diaryRepository: container.diaryRepository,
-                            widgetRefreshing: container.widgetRefreshing,
-                            scannerDestination: { onFoodFound, onBarcodeNotFound, onCancel in
-                                ScannerView(
-                                    foodCatalogRepository: container.foodCatalogRepository,
-                                    onFoodFound: onFoodFound,
-                                    onBarcodeNotFound: onBarcodeNotFound,
-                                    onCancel: onCancel
-                                )
-                            }
-                        )
-                    }
-                )
+                RootTabView()
             }
         }
         .task {

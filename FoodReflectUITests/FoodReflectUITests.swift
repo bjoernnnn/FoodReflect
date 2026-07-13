@@ -63,6 +63,28 @@ final class FoodReflectUITests: XCTestCase {
         )
     }
 
+    func testTabNavigation() {
+        let app = XCUIApplication()
+        app.launchArguments = ["-UITestReset"]
+        app.launch()
+
+        // Onboarding abschließen, um überhaupt zur Tab-Navigation zu gelangen.
+        let confirmButton = app.buttons["onboarding.confirmButton"]
+        XCTAssertTrue(confirmButton.waitForExistence(timeout: 10))
+        confirmButton.tap()
+
+        XCTAssertTrue(app.descendants(matching: .any)["dashboard.remainingKcal"].waitForExistence(timeout: 10))
+
+        for label in ["Verlauf", "Gewicht", "Einstellungen", "Heute"] {
+            let tabButton = app.tabBars.buttons[label]
+            XCTAssertTrue(tabButton.waitForExistence(timeout: 5), "Tab '\(label)' nicht gefunden")
+            tabButton.tap()
+        }
+
+        // Nach dem Rundgang zurück auf „Heute": Dashboard muss wieder sichtbar sein.
+        XCTAssertTrue(app.descendants(matching: .any)["dashboard.remainingKcal"].waitForExistence(timeout: 10))
+    }
+
     private static func digitsOnly(_ string: String) -> String {
         String(string.filter(\.isNumber))
     }

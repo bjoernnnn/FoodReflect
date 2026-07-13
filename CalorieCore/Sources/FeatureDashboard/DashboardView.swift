@@ -4,30 +4,26 @@ import Domain
 import SwiftUI
 
 /// Root-Screen: Rest-kcal groß, Makro-Balken + Tortendiagramm, heutige Einträge.
-/// Kein TabBar – ein Screen-Prinzip. Kennt `FeatureSettings`/`FeatureLog` bewusst nicht
-/// (Abhängigkeitsregel: Features → Domain + DesignSystem); beide Destinationen werden
-/// vom Composition Root injiziert.
-public struct DashboardView<SettingsDestination: View, LogSheetDestination: View>: View {
+/// Lebt als Tab in der `RootTabView`. Kennt `FeatureLog` bewusst nicht (Abhängigkeitsregel:
+/// Features → Domain + DesignSystem); die Log-Sheet-Destination wird vom Composition Root injiziert.
+public struct DashboardView<LogSheetDestination: View>: View {
     @State private var viewModel: DashboardViewModel
     @State private var isShowingLogSheet = false
     @Environment(\.scenePhase) private var scenePhase
     /// `TypographyToken.remainingKcal` ist eine feste Größe; hier per `@ScaledMetric`
     /// überschrieben, damit die eine Zahl, die zählt, auf Dynamic-Type-Änderungen reagiert.
     @ScaledMetric(relativeTo: .largeTitle) private var remainingKcalFontSize: CGFloat = 56
-    private let settingsDestination: () -> SettingsDestination
     private let logSheetDestination: () -> LogSheetDestination
 
     public init(
         diaryRepository: any DiaryRepository,
         goalsRepository: any GoalsRepository,
         widgetRefreshing: any WidgetRefreshing,
-        @ViewBuilder settingsDestination: @escaping () -> SettingsDestination,
         @ViewBuilder logSheetDestination: @escaping () -> LogSheetDestination
     ) {
         _viewModel = State(initialValue: DashboardViewModel(
             diaryRepository: diaryRepository, goalsRepository: goalsRepository, widgetRefreshing: widgetRefreshing
         ))
-        self.settingsDestination = settingsDestination
         self.logSheetDestination = logSheetDestination
     }
 
@@ -35,16 +31,6 @@ public struct DashboardView<SettingsDestination: View, LogSheetDestination: View
         NavigationStack {
             content
                 .navigationTitle("Heute")
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        NavigationLink {
-                            settingsDestination()
-                        } label: {
-                            Image(systemName: "gearshape")
-                        }
-                        .accessibilityLabel("Einstellungen")
-                    }
-                }
                 .safeAreaInset(edge: .bottom) {
                     logButton
                 }

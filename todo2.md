@@ -51,23 +51,27 @@ sichtbaren/Target-Namen ziehen nach.
 
 ---
 
-## Phase 2 – Navigation auf TabView umstellen (Voraussetzung für Gewichts-Tab)
+## Phase 2 – Navigation auf TabView umstellen (Voraussetzung für Gewichts-Tab) ✅
 
 Das Ein-Screen-Prinzip wird zur **Tab-Navigation** erweitert. `RootView` bleibt die Weiche Onboarding↔App,
 verdrahtet aber jetzt eine `RootTabView`. Composition Root bleibt der einzige Ort, der alle Features kennt.
 
-- [ ] Neue View `App/RootTabView.swift` mit `TabView`:
+- [x] Neue View `App/RootTabView.swift` mit `TabView`:
   - Tab „Heute" → `DashboardView` (SF Symbol `flame.fill`)
-  - Tab „Verlauf" → neue `HistoryView` (SF Symbol `chart.bar.fill`)
-  - Tab „Gewicht" → neue `WeightView` (SF Symbol `scalemass.fill`)
+  - Tab „Verlauf" → Platzhalter (SF Symbol `chart.bar.fill`), echte `HistoryView` folgt in Phase 6
+  - Tab „Gewicht" → Platzhalter (SF Symbol `scalemass.fill`), echte `WeightView` folgt in Phase 5
   - Tab „Einstellungen" → `SettingsView` (SF Symbol `gearshape.fill`)
-- [ ] `RootView.swift` (case `.true`) auf `RootTabView` umbauen; alle Repository-/Closure-Injektionen dorthin
-      durchreichen (wie bisher pro Feature-View).
-- [ ] Settings wandert aus der Dashboard-Toolbar in einen eigenen Tab → Zahnrad-Toolbar-Item im Dashboard entfernen
-      (oder als Shortcut belassen – Entscheidung dokumentieren).
-- [ ] Akzentfarbe für die TabBar setzen (`.tint(ColorToken.accent)`), damit aktive Tabs im Marken-Türkis erscheinen.
-- [ ] UITest-Smoke: `FoodReflectUITests` um Tab-Wechsel-Assertions erweitern (Accessibility-Identifier je Tab).
-- [ ] Build + Tests grün, Commit `feat(phase2): TabView-Navigation`.
+- [x] `RootView.swift` (case `.true`) auf `RootTabView` umgebaut; alle Repository-/Closure-Injektionen dorthin
+      durchgereicht (wie bisher pro Feature-View).
+- [x] Settings wandert aus der Dashboard-Toolbar in einen eigenen Tab → Zahnrad-Toolbar-Item im Dashboard entfernt.
+      **Entscheidung:** kein Shortcut belassen, da redundant zur TabBar; `DashboardView`s generischer
+      `SettingsDestination`-Parameter komplett entfernt (kleinere API), `SettingsView` bekam dafür ihren eigenen
+      `NavigationStack` (vorher von der Push-Navigation des Dashboards mitgenutzt).
+- [x] Akzentfarbe für die TabBar gesetzt (`.tint(ColorToken.accent)`).
+- [x] UITest-Smoke: `FoodReflectUITests` um `testTabNavigation` erweitert (rotiert durch alle vier Tabs und zurück).
+      **Erkenntnis:** `.accessibilityIdentifier` auf dem Tab-Inhalt propagiert nicht zum TabBar-Button-Element;
+      funktioniert zuverlässig nur über den sichtbaren Label-Text (`app.tabBars.buttons["Verlauf"]` etc.).
+- [x] Build + alle 65 Package-Tests + 2 XCUITests grün, Commit `feat(phase2): TabView-Navigation`.
 
 ---
 
