@@ -8,10 +8,12 @@ public final class SettingsViewModel {
     public private(set) var state: ViewState<MacroGoals> = .loading
 
     private let goalsRepository: any GoalsRepository
+    private let widgetRefreshing: any WidgetRefreshing
     private let suggestMacros = SuggestMacrosUseCase()
 
-    public init(goalsRepository: any GoalsRepository) {
+    public init(goalsRepository: any GoalsRepository, widgetRefreshing: any WidgetRefreshing) {
         self.goalsRepository = goalsRepository
+        self.widgetRefreshing = widgetRefreshing
     }
 
     public func load() async {
@@ -42,6 +44,7 @@ public final class SettingsViewModel {
     private func persist(_ goals: MacroGoals) async {
         do {
             try await goalsRepository.save(goals)
+            widgetRefreshing.reloadTimelines()
             state = .loaded(goals)
         } catch {
             state = .error(message: "Speichern fehlgeschlagen. Bitte erneut versuchen.")

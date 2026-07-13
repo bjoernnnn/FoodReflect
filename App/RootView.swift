@@ -22,14 +22,16 @@ struct RootView: View {
                 DashboardView(
                     diaryRepository: container.diaryRepository,
                     goalsRepository: container.goalsRepository,
+                    widgetRefreshing: container.widgetRefreshing,
                     settingsDestination: {
-                        SettingsView(goalsRepository: container.goalsRepository)
+                        SettingsView(goalsRepository: container.goalsRepository, widgetRefreshing: container.widgetRefreshing)
                     },
                     logSheetDestination: {
                         LogSheetView(
                             foodCatalogRepository: container.foodCatalogRepository,
                             foodDataSource: container.foodDataSource,
                             diaryRepository: container.diaryRepository,
+                            widgetRefreshing: container.widgetRefreshing,
                             scannerDestination: { onFoodFound, onBarcodeNotFound, onCancel in
                                 ScannerView(
                                     foodCatalogRepository: container.foodCatalogRepository,

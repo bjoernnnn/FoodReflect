@@ -236,11 +236,12 @@ Keine Schatten-Orgien, keine Verläufe, kein Konfetti.
 - [x] Kamera-Permission-Handling (`AVCaptureDevice.authorizationStatus`, Link zu Einstellungen bei Ablehnung) + `DataScannerViewController.isSupported`-Check für Geräte ohne Unterstützung
 - [ ] **DoD:** Scan-bis-gespeichert < 5 s auf echtem Gerät – **nicht verifizierbar in dieser Umgebung.** `DataScannerViewController` erfordert echte Kamera-Hardware (Neural Engine); im Simulator ist `isSupported == false` (dokumentiertes Apple-Verhalten, kein Bug). Code baut fehlerfrei, Fallback-UI (nicht unterstützt / Kamera-Zugriff verweigert) ist implementiert, aber der eigentliche Scan-Flow muss auf einem echten iPhone getestet werden.
 
-### Phase 7 – Wochenstatistik & iPhone-Widget
-- [ ] Wochen-Karte auf dem Dashboard: 7-Tage-Balkenchart + Ø-Zusammenfassung + über/unter Ziel (nutzt `GetWeekStatsUseCase`)
-- [ ] Widget-Extension: small (Rest-kcal + Ring) & accessoryCircular/rectangular für Lock Screen; liest den App-Group-Store read-only
-- [ ] `WidgetCenter.reloadAllTimelines()` nach jedem Log/Delete/Ziel-Update
-- [ ] **DoD:** Widget zeigt nach einem Log-Vorgang binnen Sekunden den neuen Stand
+### Phase 7 – Wochenstatistik & iPhone-Widget ✅ (Geräte-DoD offen)
+- [x] Wochen-Karte auf dem Dashboard: 7-Tage-Balkenchart (Swift Charts `BarMark` + `RuleMark`-Ziellinie) + Ø-Zusammenfassung + über/unter Ziel (nutzt `GetWeekStatsUseCase`)
+- [x] Widget-Extension (`Widget/`, neues XcodeGen-Target `app-extension`, in `KalorienTracker` embedded): small (Rest-kcal + `ProgressRing`) & `accessoryCircular`/`accessoryRectangular` für Lock Screen; `CalorieTimelineProvider` liest den App-Group-Store read-only über dieselben Repositories/UseCases wie die App
+- [x] `WidgetRefreshing`-Protokoll (Domain) + `WidgetCenterRefresher` (Data) injiziert in `DashboardViewModel` (nach Delete), `AmountEntryView`/`QuickAddView` (nach Log-Speichern), `SettingsViewModel` (nach Ziel-Update) – `WidgetCenter.reloadAllTimelines()` läuft nach jeder Mutation
+- [x] Geteilte `AppGroup.id`-Konstante (Data) statt dupliziertem String in App + Widget
+- [ ] **DoD:** Widget zeigt nach einem Log-Vorgang binnen Sekunden den neuen Stand – **nicht verifizierbar in dieser Umgebung.** Home-/Lock-Screen-Widgets lassen sich nicht headless hinzufügen/screenshotten; App+Widget-Extension bauen zusammen fehlerfrei (65 Tests grün), Logik ist unit-getestet (`reloadCount`-Assertions), aber der visuelle End-to-End-Check gehört auf ein echtes Gerät oder eine interaktive Simulator-Sitzung.
 
 ### Phase 8 – Polish & Absicherung (MVP-Abschluss)
 - [ ] Accessibility-Pass: VoiceOver-Labels, Dynamic Type, Kontraste

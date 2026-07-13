@@ -47,3 +47,11 @@ final class FakeGoalsRepository: GoalsRepository, @unchecked Sendable {
         self.goals = goals
     }
 }
+
+final class FakeWidgetRefreshing: WidgetRefreshing, @unchecked Sendable {
+    private(set) var reloadCount = 0
+
+    func reloadTimelines() {
+        reloadCount += 1
+    }
+}

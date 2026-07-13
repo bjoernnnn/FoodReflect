@@ -23,7 +23,12 @@ struct LogViewModelTests {
     func emptyQueryYieldsEmpty() async {
         let catalog = FakeFoodCatalogRepository()
         let dataSource = FakeFoodDataSource()
-        let sut = LogViewModel(foodCatalogRepository: catalog, foodDataSource: dataSource, diaryRepository: FakeDiaryRepository())
+        let sut = LogViewModel(
+            foodCatalogRepository: catalog,
+            foodDataSource: dataSource,
+            diaryRepository: FakeDiaryRepository(),
+            widgetRefreshing: FakeWidgetRefreshing()
+        )
 
         await sut.search(query: "   ")
 
@@ -39,7 +44,12 @@ struct LogViewModelTests {
         catalog.localResults = [food("Apfel Bio", barcode: "111")]
         let dataSource = FakeFoodDataSource()
         dataSource.remoteResults = [food("Apfelsaft", barcode: "222")]
-        let sut = LogViewModel(foodCatalogRepository: catalog, foodDataSource: dataSource, diaryRepository: FakeDiaryRepository())
+        let sut = LogViewModel(
+            foodCatalogRepository: catalog,
+            foodDataSource: dataSource,
+            diaryRepository: FakeDiaryRepository(),
+            widgetRefreshing: FakeWidgetRefreshing()
+        )
 
         await sut.search(query: "Apfel")
 
@@ -57,7 +67,12 @@ struct LogViewModelTests {
         catalog.localResults = [food("Nutella (lokal, oft genutzt)", barcode: "999", useCount: 5)]
         let dataSource = FakeFoodDataSource()
         dataSource.remoteResults = [food("Nutella (remote)", barcode: "999")]
-        let sut = LogViewModel(foodCatalogRepository: catalog, foodDataSource: dataSource, diaryRepository: FakeDiaryRepository())
+        let sut = LogViewModel(
+            foodCatalogRepository: catalog,
+            foodDataSource: dataSource,
+            diaryRepository: FakeDiaryRepository(),
+            widgetRefreshing: FakeWidgetRefreshing()
+        )
 
         await sut.search(query: "Nutella")
 
@@ -75,7 +90,12 @@ struct LogViewModelTests {
         catalog.localResults = [food("Apfel")]
         let dataSource = FakeFoodDataSource()
         dataSource.shouldThrow = true
-        let sut = LogViewModel(foodCatalogRepository: catalog, foodDataSource: dataSource, diaryRepository: FakeDiaryRepository())
+        let sut = LogViewModel(
+            foodCatalogRepository: catalog,
+            foodDataSource: dataSource,
+            diaryRepository: FakeDiaryRepository(),
+            widgetRefreshing: FakeWidgetRefreshing()
+        )
 
         await sut.search(query: "Apfel")
 
@@ -91,7 +111,8 @@ struct LogViewModelTests {
         let sut = LogViewModel(
             foodCatalogRepository: FakeFoodCatalogRepository(),
             foodDataSource: FakeFoodDataSource(),
-            diaryRepository: FakeDiaryRepository()
+            diaryRepository: FakeDiaryRepository(),
+            widgetRefreshing: FakeWidgetRefreshing()
         )
 
         await sut.search(query: "Nichts")

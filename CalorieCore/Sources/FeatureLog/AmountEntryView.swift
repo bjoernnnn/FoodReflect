@@ -7,6 +7,7 @@ struct AmountEntryView: View {
     let food: Food
     let diaryRepository: any DiaryRepository
     let foodCatalogRepository: any FoodCatalogRepository
+    let widgetRefreshing: any WidgetRefreshing
     let onSaved: () -> Void
 
     @State private var amountText: String
@@ -19,11 +20,13 @@ struct AmountEntryView: View {
         food: Food,
         diaryRepository: any DiaryRepository,
         foodCatalogRepository: any FoodCatalogRepository,
+        widgetRefreshing: any WidgetRefreshing,
         onSaved: @escaping () -> Void
     ) {
         self.food = food
         self.diaryRepository = diaryRepository
         self.foodCatalogRepository = foodCatalogRepository
+        self.widgetRefreshing = widgetRefreshing
         self.onSaved = onSaved
         _amountText = State(initialValue: food.servingSizeGrams.map { String(Int($0)) } ?? "100")
     }
@@ -108,6 +111,7 @@ struct AmountEntryView: View {
         do {
             try await diaryRepository.save(entry)
             try? await foodCatalogRepository.recordUsage(foodID: food.id, at: entry.consumedAt)
+            widgetRefreshing.reloadTimelines()
             onSaved()
         } catch {
             errorMessage = "Speichern fehlgeschlagen. Bitte erneut versuchen."

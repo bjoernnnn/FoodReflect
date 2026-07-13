@@ -9,17 +9,20 @@ public final class LogViewModel {
 
     let foodCatalogRepository: any FoodCatalogRepository
     let diaryRepository: any DiaryRepository
+    let widgetRefreshing: any WidgetRefreshing
     private let foodDataSource: any FoodDataSource
     private let rankSearchResults = RankSearchResultsUseCase()
 
     public init(
         foodCatalogRepository: any FoodCatalogRepository,
         foodDataSource: any FoodDataSource,
-        diaryRepository: any DiaryRepository
+        diaryRepository: any DiaryRepository,
+        widgetRefreshing: any WidgetRefreshing
     ) {
         self.foodCatalogRepository = foodCatalogRepository
         self.foodDataSource = foodDataSource
         self.diaryRepository = diaryRepository
+        self.widgetRefreshing = widgetRefreshing
     }
 
     /// Cache-first: lokale Treffer sind sofort da, OFF-Suche läuft parallel dazu.

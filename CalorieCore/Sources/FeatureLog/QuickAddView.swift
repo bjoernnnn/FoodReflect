@@ -7,11 +7,18 @@ import SwiftUI
 /// Sackgasse ist.
 struct QuickAddView: View {
     let diaryRepository: any DiaryRepository
+    let widgetRefreshing: any WidgetRefreshing
     let prefilledBarcode: String?
     let onSaved: () -> Void
 
-    init(diaryRepository: any DiaryRepository, prefilledBarcode: String? = nil, onSaved: @escaping () -> Void) {
+    init(
+        diaryRepository: any DiaryRepository,
+        widgetRefreshing: any WidgetRefreshing,
+        prefilledBarcode: String? = nil,
+        onSaved: @escaping () -> Void
+    ) {
         self.diaryRepository = diaryRepository
+        self.widgetRefreshing = widgetRefreshing
         self.prefilledBarcode = prefilledBarcode
         self.onSaved = onSaved
     }
@@ -97,6 +104,7 @@ struct QuickAddView: View {
         errorMessage = nil
         do {
             try await diaryRepository.save(entry)
+            widgetRefreshing.reloadTimelines()
             onSaved()
         } catch {
             errorMessage = "Speichern fehlgeschlagen. Bitte erneut versuchen."

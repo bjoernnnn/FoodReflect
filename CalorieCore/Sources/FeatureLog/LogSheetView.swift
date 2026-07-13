@@ -26,6 +26,7 @@ public struct LogSheetView<ScannerDestination: View>: View {
         foodCatalogRepository: any FoodCatalogRepository,
         foodDataSource: any FoodDataSource,
         diaryRepository: any DiaryRepository,
+        widgetRefreshing: any WidgetRefreshing,
         @ViewBuilder scannerDestination: @escaping (
             _ onFoodFound: @escaping (Food) -> Void,
             _ onBarcodeNotFound: @escaping (String) -> Void,
@@ -33,7 +34,8 @@ public struct LogSheetView<ScannerDestination: View>: View {
         ) -> ScannerDestination
     ) {
         _viewModel = State(initialValue: LogViewModel(
-            foodCatalogRepository: foodCatalogRepository, foodDataSource: foodDataSource, diaryRepository: diaryRepository
+            foodCatalogRepository: foodCatalogRepository, foodDataSource: foodDataSource,
+            diaryRepository: diaryRepository, widgetRefreshing: widgetRefreshing
         ))
         self.scannerDestination = scannerDestination
     }
@@ -56,14 +58,19 @@ public struct LogSheetView<ScannerDestination: View>: View {
                 AmountEntryView(
                     food: food,
                     diaryRepository: viewModel.diaryRepository,
-                    foodCatalogRepository: viewModel.foodCatalogRepository
+                    foodCatalogRepository: viewModel.foodCatalogRepository,
+                    widgetRefreshing: viewModel.widgetRefreshing
                 ) {
                     dismiss()
                 }
             }
             // swiftlint:disable:next multiple_closures_with_trailing_closure
             .sheet(isPresented: $isShowingQuickAdd, onDismiss: { quickAddBarcode = nil }) {
-                QuickAddView(diaryRepository: viewModel.diaryRepository, prefilledBarcode: quickAddBarcode) {
+                QuickAddView(
+                    diaryRepository: viewModel.diaryRepository,
+                    widgetRefreshing: viewModel.widgetRefreshing,
+                    prefilledBarcode: quickAddBarcode
+                ) {
                     isShowingQuickAdd = false
                     dismiss()
                 }

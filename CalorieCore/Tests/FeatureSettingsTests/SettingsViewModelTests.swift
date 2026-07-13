@@ -10,7 +10,7 @@ struct SettingsViewModelTests {
     func loadsExistingGoals() async {
         let existing = MacroGoals(dailyKcal: 1800, proteinGrams: 135, carbsGrams: 180, fatGrams: 60, isCustomized: true)
         let repository = FakeGoalsRepository(goals: existing)
-        let sut = SettingsViewModel(goalsRepository: repository)
+        let sut = SettingsViewModel(goalsRepository: repository, widgetRefreshing: FakeWidgetRefreshing())
 
         await sut.load()
 
@@ -24,7 +24,7 @@ struct SettingsViewModelTests {
     @Test("Keine Ziele vorhanden ergibt .empty statt Crash")
     func noGoalsYieldsEmptyState() async {
         let repository = FakeGoalsRepository(goals: nil)
-        let sut = SettingsViewModel(goalsRepository: repository)
+        let sut = SettingsViewModel(goalsRepository: repository, widgetRefreshing: FakeWidgetRefreshing())
 
         await sut.load()
 
@@ -37,7 +37,7 @@ struct SettingsViewModelTests {
     @Test("Manuelles Speichern markiert die Ziele als customized")
     func manualSaveMarksCustomized() async {
         let repository = FakeGoalsRepository()
-        let sut = SettingsViewModel(goalsRepository: repository)
+        let sut = SettingsViewModel(goalsRepository: repository, widgetRefreshing: FakeWidgetRefreshing())
 
         await sut.save(dailyKcal: 2200, proteinGrams: 160, carbsGrams: 220, fatGrams: 70)
 
@@ -50,7 +50,7 @@ struct SettingsViewModelTests {
         let repository = FakeGoalsRepository(
             goals: MacroGoals(dailyKcal: 2200, proteinGrams: 999, carbsGrams: 999, fatGrams: 999, isCustomized: true)
         )
-        let sut = SettingsViewModel(goalsRepository: repository)
+        let sut = SettingsViewModel(goalsRepository: repository, widgetRefreshing: FakeWidgetRefreshing())
 
         await sut.restoreAutoSuggestion(dailyKcal: 2200)
 

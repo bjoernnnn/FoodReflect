@@ -56,6 +56,45 @@ targets:
         product: FeatureScanner
       - package: CalorieCore
         product: FeatureSettings
+      - target: Widget
+        embed: true
+
+  Widget:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: Widget
+        excludes:
+          - "Info.plist"
+          - "Widget.entitlements"
+    info:
+      path: Widget/Info.plist
+      properties:
+        CFBundleDisplayName: Kalorien-Widget
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: Widget/Widget.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.bjoernnnn.foodreflect
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.bjoernnnn.foodreflect.Widget
+        SWIFT_VERSION: 5.10
+        SWIFT_STRICT_CONCURRENCY: complete
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        TARGETED_DEVICE_FAMILY: "1"
+        SKIP_INSTALL: true
+    dependencies:
+      - package: CalorieCore
+        product: Domain
+      - package: CalorieCore
+        product: Data
+      - package: CalorieCore
+        product: DesignSystem
 
 schemes:
   KalorienTracker:

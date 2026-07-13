@@ -62,3 +62,11 @@ final class FakeDiaryRepository: DiaryRepository, @unchecked Sendable {
         saved.removeAll { $0.id == entryID }
     }
 }
+
+final class FakeWidgetRefreshing: WidgetRefreshing, @unchecked Sendable {
+    private(set) var reloadCount = 0
+
+    func reloadTimelines() {
+        reloadCount += 1
+    }
+}

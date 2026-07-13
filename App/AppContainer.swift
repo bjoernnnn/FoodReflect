@@ -12,8 +12,7 @@ final class AppContainer {
     let goalsRepository: any GoalsRepository
     let foodCatalogRepository: any FoodCatalogRepository
     let foodDataSource: any FoodDataSource
-
-    private static let appGroupID = "group.com.bjoernnnn.foodreflect"
+    let widgetRefreshing: any WidgetRefreshing
 
     init() {
         let modelContainer = Self.makeModelContainer()
@@ -26,13 +25,14 @@ final class AppContainer {
             remoteDataSource: offClient
         )
         foodDataSource = offClient
+        widgetRefreshing = WidgetCenterRefresher()
     }
 
-    /// App-Group-Store ist der Regelfall (fürs Widget in Phase 7 nötig). Fällt ohne
-    /// funktionierende App-Group-Provisionierung (z. B. Simulator ohne Apple-Developer-Team)
-    /// auf einen In-Memory-Store zurück, statt die App abstürzen zu lassen.
+    /// App-Group-Store ist der Regelfall (fürs Widget nötig, liest denselben Store read-only).
+    /// Fällt ohne funktionierende App-Group-Provisionierung (z. B. Simulator ohne
+    /// Apple-Developer-Team) auf einen In-Memory-Store zurück, statt die App abstürzen zu lassen.
     private static func makeModelContainer() -> ModelContainer {
-        if let appGroupContainer = try? ModelContainerFactory.makeAppGroupContainer(appGroupID: appGroupID) {
+        if let appGroupContainer = try? ModelContainerFactory.makeAppGroupContainer(appGroupID: AppGroup.id) {
             return appGroupContainer
         }
         // In-Memory-Schema ohne I/O; kann unter normalen Umständen nicht fehlschlagen.

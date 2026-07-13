@@ -16,10 +16,13 @@ public struct DashboardView<SettingsDestination: View, LogSheetDestination: View
     public init(
         diaryRepository: any DiaryRepository,
         goalsRepository: any GoalsRepository,
+        widgetRefreshing: any WidgetRefreshing,
         @ViewBuilder settingsDestination: @escaping () -> SettingsDestination,
         @ViewBuilder logSheetDestination: @escaping () -> LogSheetDestination
     ) {
-        _viewModel = State(initialValue: DashboardViewModel(diaryRepository: diaryRepository, goalsRepository: goalsRepository))
+        _viewModel = State(initialValue: DashboardViewModel(
+            diaryRepository: diaryRepository, goalsRepository: goalsRepository, widgetRefreshing: widgetRefreshing
+        ))
         self.settingsDestination = settingsDestination
         self.logSheetDestination = logSheetDestination
     }
@@ -89,6 +92,9 @@ public struct DashboardView<SettingsDestination: View, LogSheetDestination: View
             Section {
                 remainingKcalSection(totals)
                 macrosSection(totals)
+                if let weekStats = viewModel.weekStats, !weekStats.days.isEmpty {
+                    weekCard(weekStats)
+                }
             }
             .listRowSeparator(.hidden)
             .listRowBackground(Color.clear)
@@ -167,6 +173,37 @@ public struct DashboardView<SettingsDestination: View, LogSheetDestination: View
                 tint: .orange
             )
             MacroBar(title: "Fett", currentGrams: totals.fat, targetGrams: Double(totals.goals.fatGrams), tint: .pink)
+        }
+        .cardBackground()
+    }
+
+    private func weekCard(_ weekStats: WeekStats) -> some View {
+        let goal = weekStats.days.last?.goals.dailyKcal ?? 0
+        let delta = weekStats.deltaFromGoal
+        let deltaDirection = delta <= 0 ? "unter" : "über"
+
+        return VStack(alignment: .leading, spacing: Spacing.sm) {
+            Text("Diese Woche")
+                .font(TypographyToken.headline)
+
+            Chart {
+                ForEach(weekStats.days, id: \.dayKey) { day in
+                    BarMark(x: .value("Tag", day.dayKey), y: .value("kcal", day.kcal))
+                        .foregroundStyle(ColorToken.accent)
+                        .cornerRadius(4)
+                }
+                if goal > 0 {
+                    RuleMark(y: .value("Ziel", goal))
+                        .foregroundStyle(ColorToken.secondaryText)
+                        .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
+                }
+            }
+            .chartXAxis(.hidden)
+            .frame(height: 100)
+
+            Text("Ø \(Int(weekStats.averageKcal)) kcal/Tag · \(Int(abs(delta))) kcal \(deltaDirection) Ziel")
+                .font(TypographyToken.caption)
+                .foregroundStyle(ColorToken.secondaryText)
         }
         .cardBackground()
     }

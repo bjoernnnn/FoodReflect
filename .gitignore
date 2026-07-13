@@ -23,6 +23,8 @@ playground.xcworkspace
 *.xcodeproj
 App/Info.plist
 App/KalorienTracker.entitlements
+Widget/Info.plist
+Widget/Widget.entitlements
 
 # Swift Package Manager
 .build/

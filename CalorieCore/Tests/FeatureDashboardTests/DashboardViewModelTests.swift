@@ -37,7 +37,10 @@ struct DashboardViewModelTests {
         )
         let diaryRepository = FakeDiaryRepository(entries: [entryToday, entryYesterday])
         let goalsRepository = FakeGoalsRepository(goals: goals)
-        let sut = DashboardViewModel(diaryRepository: diaryRepository, goalsRepository: goalsRepository, calendar: fixedCalendar)
+        let sut = DashboardViewModel(
+            diaryRepository: diaryRepository, goalsRepository: goalsRepository,
+            widgetRefreshing: FakeWidgetRefreshing(), calendar: fixedCalendar
+        )
 
         await sut.load()
 
@@ -66,12 +69,17 @@ struct DashboardViewModelTests {
         )
         let diaryRepository = FakeDiaryRepository(entries: [entry])
         let goalsRepository = FakeGoalsRepository(goals: goals)
-        let sut = DashboardViewModel(diaryRepository: diaryRepository, goalsRepository: goalsRepository, calendar: fixedCalendar)
+        let widgetRefreshing = FakeWidgetRefreshing()
+        let sut = DashboardViewModel(
+            diaryRepository: diaryRepository, goalsRepository: goalsRepository,
+            widgetRefreshing: widgetRefreshing, calendar: fixedCalendar
+        )
         await sut.load()
 
         await sut.delete(entryID: entry.id)
 
         #expect(sut.todayEntries.isEmpty)
+        #expect(widgetRefreshing.reloadCount == 1)
         guard case let .loaded(totals) = sut.state else {
             Issue.record("expected .loaded, got \(sut.state)")
             return
@@ -83,7 +91,10 @@ struct DashboardViewModelTests {
     func emptyDay() async {
         let diaryRepository = FakeDiaryRepository()
         let goalsRepository = FakeGoalsRepository(goals: goals)
-        let sut = DashboardViewModel(diaryRepository: diaryRepository, goalsRepository: goalsRepository, calendar: fixedCalendar)
+        let sut = DashboardViewModel(
+            diaryRepository: diaryRepository, goalsRepository: goalsRepository,
+            widgetRefreshing: FakeWidgetRefreshing(), calendar: fixedCalendar
+        )
 
         await sut.load()
 
@@ -96,12 +107,41 @@ struct DashboardViewModelTests {
         #expect(totals.remainingKcal == 2000)
     }
 
+    @Test("Lädt Wochenstatistik über die letzten 7 Tage")
+    func loadsWeekStats() async {
+        let today = todayKey()
+        let entry = DiaryEntry(
+            consumedAt: Date(),
+            dayKey: today,
+            foodName: "Apfel",
+            amountGrams: 100,
+            kcal: 300,
+            protein: 1,
+            carbs: 2,
+            fat: 3
+        )
+        let diaryRepository = FakeDiaryRepository(entries: [entry])
+        let goalsRepository = FakeGoalsRepository(goals: goals)
+        let sut = DashboardViewModel(
+            diaryRepository: diaryRepository, goalsRepository: goalsRepository,
+            widgetRefreshing: FakeWidgetRefreshing(), calendar: fixedCalendar
+        )
+
+        await sut.load()
+
+        #expect(sut.weekStats?.days.count == 7)
+        #expect(sut.weekStats?.days.last?.dayKey == today)
+    }
+
     @Test("Repository-Fehler beim Laden ergibt .error statt Crash")
     func loadFailureSurfacesErrorState() async {
         let diaryRepository = FakeDiaryRepository()
         diaryRepository.shouldThrow = true
         let goalsRepository = FakeGoalsRepository(goals: goals)
-        let sut = DashboardViewModel(diaryRepository: diaryRepository, goalsRepository: goalsRepository, calendar: fixedCalendar)
+        let sut = DashboardViewModel(
+            diaryRepository: diaryRepository, goalsRepository: goalsRepository,
+            widgetRefreshing: FakeWidgetRefreshing(), calendar: fixedCalendar
+        )
 
         await sut.load()
 

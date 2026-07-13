@@ -9,8 +9,8 @@ public struct SettingsView: View {
     @State private var carbsText = ""
     @State private var fatText = ""
 
-    public init(goalsRepository: any GoalsRepository) {
-        _viewModel = State(initialValue: SettingsViewModel(goalsRepository: goalsRepository))
+    public init(goalsRepository: any GoalsRepository, widgetRefreshing: any WidgetRefreshing) {
+        _viewModel = State(initialValue: SettingsViewModel(goalsRepository: goalsRepository, widgetRefreshing: widgetRefreshing))
     }
 
     public var body: some View {
