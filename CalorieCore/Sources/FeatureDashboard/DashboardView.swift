@@ -14,6 +14,8 @@ public struct DashboardView<LogSheetDestination: View>: View {
     /// überschrieben, damit die eine Zahl, die zählt, auf Dynamic-Type-Änderungen reagiert.
     @ScaledMetric(relativeTo: .largeTitle) private var remainingKcalFontSize: CGFloat = 56
     private let logSheetDestination: () -> LogSheetDestination
+    private let diaryRepository: any DiaryRepository
+    private let widgetRefreshing: any WidgetRefreshing
 
     public init(
         diaryRepository: any DiaryRepository,
@@ -25,6 +27,8 @@ public struct DashboardView<LogSheetDestination: View>: View {
             diaryRepository: diaryRepository, goalsRepository: goalsRepository, widgetRefreshing: widgetRefreshing
         ))
         self.logSheetDestination = logSheetDestination
+        self.diaryRepository = diaryRepository
+        self.widgetRefreshing = widgetRefreshing
     }
 
     public var body: some View {
@@ -36,6 +40,14 @@ public struct DashboardView<LogSheetDestination: View>: View {
                 }
                 .sheet(isPresented: $isShowingLogSheet, onDismiss: reloadAfterLogSheet) {
                     logSheetDestination()
+                }
+                .navigationDestination(for: DiaryEntry.self) { entry in
+                    EntryDetailView(
+                        entry: entry,
+                        diaryRepository: diaryRepository,
+                        widgetRefreshing: widgetRefreshing,
+                        onChange: { Task { await viewModel.load() } }
+                    )
                 }
                 .task { await viewModel.load() }
                 // Deckt Mitternachts-/Zeitzonenwechsel ab: dayKey wird bei jeder
@@ -90,9 +102,6 @@ public struct DashboardView<LogSheetDestination: View>: View {
             Section {
                 remainingKcalSection(totals)
                 macrosSection(totals)
-                if let weekStats = viewModel.weekStats, !weekStats.days.isEmpty {
-                    weekCard(weekStats)
-                }
             }
             .listRowSeparator(.hidden)
             .listRowBackground(Color.clear)
@@ -104,12 +113,14 @@ public struct DashboardView<LogSheetDestination: View>: View {
                         .foregroundStyle(ColorToken.secondaryText)
                 } else {
                     ForEach(viewModel.todayEntries) { entry in
-                        entryRow(entry)
-                            .swipeActions {
-                                Button("Löschen", role: .destructive) {
-                                    Task { await viewModel.delete(entryID: entry.id) }
-                                }
+                        NavigationLink(value: entry) {
+                            entryRow(entry)
+                        }
+                        .swipeActions {
+                            Button("Löschen", role: .destructive) {
+                                Task { await viewModel.delete(entryID: entry.id) }
                             }
+                        }
                     }
                 }
             }
@@ -219,41 +230,6 @@ public struct DashboardView<LogSheetDestination: View>: View {
                 title: "Fett", currentGrams: totals.fat, targetGrams: Double(totals.goals.fatGrams),
                 tint: ColorToken.fatColor
             )
-        }
-        .cardBackground()
-    }
-
-    private func weekCard(_ weekStats: WeekStats) -> some View {
-        let goal = weekStats.days.last?.goals.dailyKcal ?? 0
-        let delta = weekStats.deltaFromGoal
-        let deltaDirection = delta <= 0 ? "unter" : "über"
-
-        return VStack(alignment: .leading, spacing: Spacing.sm) {
-            Text("Diese Woche")
-                .font(TypographyToken.headline)
-
-            Chart {
-                ForEach(weekStats.days, id: \.dayKey) { day in
-                    BarMark(x: .value("Tag", day.dayKey), y: .value("kcal", day.kcal))
-                        .foregroundStyle(ColorToken.accent)
-                        .cornerRadius(4)
-                }
-                if goal > 0 {
-                    RuleMark(y: .value("Ziel", goal))
-                        .foregroundStyle(ColorToken.secondaryText)
-                        .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
-                }
-            }
-            .chartXAxis(.hidden)
-            .frame(height: 100)
-            .accessibilityLabel("Wochenverlauf")
-            .accessibilityValue(
-                "Durchschnitt \(Int(weekStats.averageKcal)) Kilokalorien pro Tag, \(Int(abs(delta))) \(deltaDirection) Ziel"
-            )
-
-            Text("Ø \(Int(weekStats.averageKcal)) kcal/Tag · \(Int(abs(delta))) kcal \(deltaDirection) Ziel")
-                .font(TypographyToken.caption)
-                .foregroundStyle(ColorToken.secondaryText)
         }
         .cardBackground()
     }

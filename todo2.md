@@ -199,19 +199,36 @@ optionale Relationships, Defaults) erhalten bleibt.
 
 Unterseiten, die den bestehenden Datenfluss ergänzen (jeweils per `NavigationStack`-Push innerhalb ihres Tabs).
 
-- [ ] **Verlauf-Tab (`HistoryView`)**: Monats-/Wochenübersicht der kcal (Balken- + Durchschnittslinie), aus
-      `GetWeekStatsUseCase` bzw. neuem `GetMonthStatsUseCase` (Erweiterung des Diary-Ranges). Der bisherige
-      „Diese Woche"-Chart kann vom Dashboard hierher wandern (Dashboard bleibt fokussierter).
-- [ ] **Tages-Detail (`DayDetailView`)**: Tippen auf einen Tag im Verlauf → alle Einträge dieses Tages,
-      Makro-Aufschlüsselung, Zielerreichung. Nutzt `diaryRepository.entries(on:)`.
-- [ ] **Eintrag-Detail (`EntryDetailView`)**: Tippen auf einen Eintrag im Dashboard → volle Nährwerte,
-      Menge editieren, löschen. (Aktuell nur Swipe-Delete – Detail erhöht Nutzwert.)
-- [ ] **Gewicht-Historie (`WeightHistoryView`)**: vollständige Tabelle aller Messungen mit Löschen/Bearbeiten,
-      erreichbar aus dem Gewichts-Tab.
-- [ ] **Über/Info in Settings**: Version, verwendete Datenquelle (Open Food Facts, ODbL-Lizenzhinweis),
-      Datenschutz-Hinweis „alles lokal". (ODbL-Attribution ist ohnehin Pflicht.)
-- [ ] Jede Unterseite: leerer/Fehler-Zustand via `ContentUnavailableView`, konsistent mit Dashboard.
-- [ ] Build + Tests grün, Commit `feat(phase6): Unterseiten (Verlauf, Detail, Gewicht-Historie, Info)`.
+- [x] **Verlauf-Tab (`HistoryView`, neues Package-Target `FeatureHistory`)**: Wochen-/Monatsübersicht der kcal
+      (Balkendiagramm + gestrichelte Ziellinie + Ø/Delta-Text), Segmented Picker Woche/Monat. Wiederverwendet
+      `GetWeekStatsUseCase` unverändert (die UseCase ist trotz des Namens zeitraumagnostisch – nimmt beliebig
+      viele `dayKeys`, daher kein separater `GetMonthStatsUseCase` nötig). Der bisherige „Diese Woche"-Chart ist
+      vom Dashboard hierher gewandert (Dashboard zeigt jetzt nur noch Ring + Makros + heutige Einträge).
+- [x] **Tages-Detail (`DayDetailView`, in `FeatureHistory`)**: Tippen auf einen Tag im Verlauf → alle Einträge
+      dieses Tages, Makro-Aufschlüsselung (`MacroBar` x3), Zielerreichung (`kcal / Ziel`). Eigenes
+      `DayDetailViewModel` lädt selbstständig über `diaryRepository.entries(on:)` + `GetDayTotalsUseCase.aggregate`.
+- [x] **Eintrag-Detail (`EntryDetailView`, in `FeatureDashboard`)**: Tippen auf einen Eintrag im Dashboard → volle
+      Nährwerte, Menge editieren (skaliert kcal/Makros proportional zum Nährwert-Snapshot des Eintrags – kein
+      Food-Lookup, damit spätere Food-Änderungen die Historie nicht verfälschen), löschen. Dashboard lädt nach
+      Rückkehr automatisch neu (Closure-Callback, kein Polling). `DiaryEntry` ist dafür jetzt `Hashable`
+      (für `NavigationLink(value:)`/`navigationDestination(for:)`).
+- [x] **Gewicht-Historie (`WeightHistoryView`, in `FeatureWeight`)**: vollständige Tabelle aller Messungen
+      (nicht nur die 90-Tage-Vorgabe von `WeightView` – neue `WeightViewModel.loadAll()`), mit Bearbeiten (Tap
+      öffnet `WeightEntrySheet` vorbefüllt) und Löschen (Swipe). Teilt sich absichtlich das `WeightViewModel`
+      mit `WeightView` (eine Quelle der Wahrheit), erreichbar über einen neuen Toolbar-Link "Verlauf".
+      `WeightViewModel.save` unterstützt jetzt optional `entryID:` für Edit-in-place statt Duplikat.
+- [x] **Über/Info in Settings (`AboutView`)**: Version (aus `Bundle.main`), Open-Food-Facts/ODbL-Lizenzhinweis,
+      Datenschutz-Hinweis „alles lokal, keine Cloud-Synchronisation, kein Tracking". Settings nutzt dafür
+      jetzt `.navigationDestination(for: SettingsPushDestination.self)` (Konsistenz mit den anderen Tabs).
+- [x] Jede Unterseite: leerer/Fehler-Zustand via `ContentUnavailableView`, konsistent mit Dashboard.
+- [x] Visuell verifiziert per XCUITest-Screenshots (Eintrag-Detail, Verlauf-Chart, Tages-Detail,
+      Gewichts-Historie, Über-FoodReflect) – alle korrekt gerendert; temporärer Test danach gelöscht.
+- [x] Beim Aufräumen zusätzlich ein zweiter architektonischer Nebeneffekt: `FakeDiaryRepository.save` in den
+      Tests machte bisher kein Upsert-by-id (nur `append`) – für den Eintrag-Detail-Edit-Test korrigiert, jetzt
+      konsistent mit dem echten `SwiftDataDiaryRepository.save`-Verhalten.
+- [x] Build + alle 90 Package-Tests (Domain 25 + Data 32 + FeatureDashboard 8 + FeatureHistory 6 + FeatureLog 5 +
+      FeatureScanner 1 + FeatureSettings 7 + FeatureWeight 6) + 2 XCUITests grün,
+      Commit `feat(phase6): Unterseiten (Verlauf, Detail, Gewicht-Historie, Info)`.
 
 ---
 

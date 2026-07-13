@@ -37,6 +37,10 @@ public struct WeightView: View {
             content
                 .navigationTitle("Gewicht")
                 .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        NavigationLink("Verlauf", destination: WeightHistoryView(viewModel: viewModel))
+                            .accessibilityIdentifier("weight.historyLink")
+                    }
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {
                             isShowingAddSheet = true

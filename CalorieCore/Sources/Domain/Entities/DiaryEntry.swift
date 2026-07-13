@@ -2,7 +2,7 @@ import Foundation
 
 /// Tagebucheintrag – denormalisierter Snapshot der Nährwerte zum Erfassungszeitpunkt.
 /// Späteres Editieren des zugrundeliegenden `Food` darf die Historie NICHT verändern.
-public struct DiaryEntry: Identifiable, Equatable, Sendable {
+public struct DiaryEntry: Identifiable, Hashable, Sendable {
     public let id: UUID
     public var consumedAt: Date
     public var dayKey: String

@@ -17,21 +17,18 @@ final class FakeDiaryRepository: DiaryRepository, @unchecked Sendable {
     }
 
     func entries(fromDayKey: String, toDayKey: String) async throws(DomainError) -> [DiaryEntry] {
-        storage.filter { $0.dayKey >= fromDayKey && $0.dayKey <= toDayKey }
-    }
-
-    func save(_ entry: DiaryEntry) async throws(DomainError) {
         if shouldThrow {
             throw DomainError.notFound
         }
+        return storage.filter { $0.dayKey >= fromDayKey && $0.dayKey <= toDayKey }
+    }
+
+    func save(_ entry: DiaryEntry) async throws(DomainError) {
         storage.removeAll { $0.id == entry.id }
         storage.append(entry)
     }
 
     func delete(entryID: UUID) async throws(DomainError) {
-        if shouldThrow {
-            throw DomainError.notFound
-        }
         storage.removeAll { $0.id == entryID }
     }
 }
@@ -49,13 +46,5 @@ final class FakeGoalsRepository: GoalsRepository, @unchecked Sendable {
 
     func save(_ goals: MacroGoals) async throws(DomainError) {
         self.goals = goals
-    }
-}
-
-final class FakeWidgetRefreshing: WidgetRefreshing, @unchecked Sendable {
-    private(set) var reloadCount = 0
-
-    func reloadTimelines() {
-        reloadCount += 1
     }
 }

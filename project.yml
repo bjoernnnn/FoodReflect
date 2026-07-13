@@ -52,6 +52,8 @@ targets:
       - package: CalorieCore
         product: FeatureDashboard
       - package: CalorieCore
+        product: FeatureHistory
+      - package: CalorieCore
         product: FeatureLog
       - package: CalorieCore
         product: FeatureScanner

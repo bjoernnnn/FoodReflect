@@ -1,5 +1,6 @@
 import DesignSystem
 import FeatureDashboard
+import FeatureHistory
 import FeatureLog
 import FeatureScanner
 import FeatureSettings
@@ -36,7 +37,7 @@ struct RootTabView: View {
             )
             .tabItem { Label("Heute", systemImage: "flame.fill") }
 
-            HistoryTabPlaceholder()
+            HistoryView(diaryRepository: container.diaryRepository, goalsRepository: container.goalsRepository)
                 .tabItem { Label("Verlauf", systemImage: "chart.bar.fill") }
 
             WeightView(weightRepository: container.weightRepository, widgetRefreshing: container.widgetRefreshing)
@@ -46,15 +47,5 @@ struct RootTabView: View {
                 .tabItem { Label("Einstellungen", systemImage: "gearshape.fill") }
         }
         .tint(ColorToken.accent)
-    }
-}
-
-/// Platzhalter, bis Phase 6 (todo2.md) die echte Verlaufsansicht baut.
-private struct HistoryTabPlaceholder: View {
-    var body: some View {
-        NavigationStack {
-            ContentUnavailableView("Verlauf", systemImage: "chart.bar.fill", description: Text("Folgt in Phase 6."))
-                .navigationTitle("Verlauf")
-        }
     }
 }

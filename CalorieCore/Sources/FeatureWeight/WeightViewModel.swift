@@ -11,6 +11,10 @@ public final class WeightViewModel {
     private let weightRepository: any WeightRepository
     private let widgetRefreshing: any WidgetRefreshing
     private let calendar: Calendar
+    /// Merkt sich den zuletzt geladenen Zeitraum, damit `save`/`delete` denselben Ausschnitt neu
+    /// laden statt ihn auf die 90-Tage-Vorgabe zurückzusetzen (relevant für `loadAll()`).
+    private var lastDaysBack = 90
+    private static let allDaysBack = 36500
 
     public init(weightRepository: any WeightRepository, widgetRefreshing: any WidgetRefreshing, calendar: Calendar = .current) {
         self.weightRepository = weightRepository
@@ -21,6 +25,7 @@ public final class WeightViewModel {
     /// Lädt standardmäßig die letzten 90 Tage – reicht für „Woche"/„Monat"/„Alle" im UI,
     /// ohne bei jedem Zeitraumwechsel neu vom Repository nachzuladen.
     public func load(daysBack: Int = 90) async {
+        lastDaysBack = daysBack
         state = .loading
         let toKey = DayKey.make(for: Date(), calendar: calendar)
         let fromDate = calendar.date(byAdding: .day, value: -daysBack, to: Date()) ?? Date()
@@ -35,12 +40,21 @@ public final class WeightViewModel {
         }
     }
 
-    public func save(weightKg: Double, date: Date) async {
-        let entry = WeightEntry(dayKey: DayKey.make(for: date, calendar: calendar), weightKg: weightKg, recordedAt: date)
+    /// Lädt faktisch die komplette Historie, für die vollständige Verlaufsseite (Phase 6).
+    public func loadAll() async {
+        await load(daysBack: Self.allDaysBack)
+    }
+
+    /// Ohne `entryID` wird eine neue Messung angelegt, mit `entryID` eine bestehende ersetzt
+    /// (Repository macht Upsert-by-id).
+    public func save(entryID: UUID? = nil, weightKg: Double, date: Date) async {
+        let entry = WeightEntry(
+            id: entryID ?? UUID(), dayKey: DayKey.make(for: date, calendar: calendar), weightKg: weightKg, recordedAt: date
+        )
         do {
             try await weightRepository.save(entry)
             widgetRefreshing.reloadTimelines()
-            await load()
+            await load(daysBack: lastDaysBack)
         } catch {
             state = .error(message: "Speichern fehlgeschlagen. Bitte erneut versuchen.")
         }
@@ -50,7 +64,7 @@ public final class WeightViewModel {
         do {
             try await weightRepository.delete(entryID: entryID)
             widgetRefreshing.reloadTimelines()
-            await load()
+            await load(daysBack: lastDaysBack)
         } catch {
             state = .error(message: "Löschen fehlgeschlagen.")
         }

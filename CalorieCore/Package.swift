@@ -15,6 +15,7 @@ let package = Package(
         .library(name: "Data", targets: ["Data"]),
         .library(name: "DesignSystem", targets: ["DesignSystem"]),
         .library(name: "FeatureDashboard", targets: ["FeatureDashboard"]),
+        .library(name: "FeatureHistory", targets: ["FeatureHistory"]),
         .library(name: "FeatureLog", targets: ["FeatureLog"]),
         .library(name: "FeatureScanner", targets: ["FeatureScanner"]),
         .library(name: "FeatureSettings", targets: ["FeatureSettings"]),
@@ -63,6 +64,17 @@ let package = Package(
         .testTarget(
             name: "FeatureDashboardTests",
             dependencies: ["FeatureDashboard"],
+            swiftSettings: strictConcurrency
+        ),
+
+        .target(
+            name: "FeatureHistory",
+            dependencies: ["Domain", "DesignSystem"],
+            swiftSettings: strictConcurrency
+        ),
+        .testTarget(
+            name: "FeatureHistoryTests",
+            dependencies: ["FeatureHistory"],
             swiftSettings: strictConcurrency
         ),
 

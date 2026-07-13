@@ -1,16 +1,26 @@
 import DesignSystem
+import Domain
 import SwiftUI
 
-/// Eintragen einer neuen Gewichtsmessung: Zahl + Datum, Einheit kg.
+/// Eintragen oder Bearbeiten einer Gewichtsmessung: Zahl + Datum, Einheit kg.
+/// Mit `existingEntry` startet das Formular vorbefüllt im Bearbeiten-Modus.
 /// lb-Umschaltung ist bewusst Post-MVP (siehe todo2.md Phase 5).
 struct WeightEntrySheet: View {
+    let existingEntry: WeightEntry?
     let onSave: (Double, Date) async -> Void
 
     @Environment(\.dismiss) private var dismiss
-    @State private var weightText = ""
-    @State private var date = Date()
+    @State private var weightText: String
+    @State private var date: Date
     @State private var isSaving = false
     @FocusState private var isWeightFocused: Bool
+
+    init(existingEntry: WeightEntry? = nil, onSave: @escaping (Double, Date) async -> Void) {
+        self.existingEntry = existingEntry
+        self.onSave = onSave
+        _weightText = State(initialValue: existingEntry.map { String(format: "%.1f", $0.weightKg) } ?? "")
+        _date = State(initialValue: existingEntry?.recordedAt ?? Date())
+    }
 
     private var canSave: Bool {
         guard let value = Double(weightText.replacingOccurrences(of: ",", with: ".")) else { return false }
@@ -32,7 +42,7 @@ struct WeightEntrySheet: View {
                     DatePicker("Datum", selection: $date, in: ...Date(), displayedComponents: .date)
                 }
             }
-            .navigationTitle("Gewicht eintragen")
+            .navigationTitle(existingEntry == nil ? "Gewicht eintragen" : "Gewicht bearbeiten")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

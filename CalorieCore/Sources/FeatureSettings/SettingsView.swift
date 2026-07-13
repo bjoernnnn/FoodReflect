@@ -2,6 +2,10 @@ import DesignSystem
 import Domain
 import SwiftUI
 
+enum SettingsPushDestination: Hashable {
+    case about
+}
+
 public struct SettingsView: View {
     @State private var viewModel: SettingsViewModel
     @State private var dailyKcalText = ""
@@ -17,6 +21,11 @@ public struct SettingsView: View {
         NavigationStack {
             content
                 .navigationTitle("Einstellungen")
+                .navigationDestination(for: SettingsPushDestination.self) { destination in
+                    switch destination {
+                    case .about: AboutView()
+                    }
+                }
                 .task { await viewModel.load() }
         }
     }
@@ -75,6 +84,9 @@ public struct SettingsView: View {
                 Button("Auto-Vorschlag wiederherstellen") {
                     Task { await viewModel.restoreAutoSuggestion(dailyKcal: Int(dailyKcalText) ?? goals.dailyKcal) }
                 }
+            }
+            Section("Info") {
+                NavigationLink("Über FoodReflect", value: SettingsPushDestination.about)
             }
         }
         .onAppear {
