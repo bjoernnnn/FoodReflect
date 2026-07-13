@@ -4,7 +4,8 @@ import SwiftUI
 
 /// Log-Sheet: fokussiertes Suchfeld + Barcode-Button, gerankte Ergebnisliste,
 /// Tap → Mengeneingabe, Fußzeile „Schnelleintrag". Kennt `FeatureScanner` bewusst
-/// nicht – die Scanner-Destination wird vom Composition Root injiziert.
+/// nicht – die Scanner-Destination wird vom Composition Root injiziert und kommuniziert
+/// nur über reine Domain-Typen (`Food`/`String`) zurück.
 public struct LogSheetView<ScannerDestination: View>: View {
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: LogViewModel
@@ -12,15 +13,24 @@ public struct LogSheetView<ScannerDestination: View>: View {
     @State private var selectedFood: Food?
     @State private var isShowingQuickAdd = false
     @State private var isShowingScanner = false
+    @State private var quickAddBarcode: String?
     @FocusState private var isSearchFocused: Bool
 
-    private let scannerDestination: () -> ScannerDestination
+    private let scannerDestination: (
+        _ onFoodFound: @escaping (Food) -> Void,
+        _ onBarcodeNotFound: @escaping (String) -> Void,
+        _ onCancel: @escaping () -> Void
+    ) -> ScannerDestination
 
     public init(
         foodCatalogRepository: any FoodCatalogRepository,
         foodDataSource: any FoodDataSource,
         diaryRepository: any DiaryRepository,
-        @ViewBuilder scannerDestination: @escaping () -> ScannerDestination
+        @ViewBuilder scannerDestination: @escaping (
+            _ onFoodFound: @escaping (Food) -> Void,
+            _ onBarcodeNotFound: @escaping (String) -> Void,
+            _ onCancel: @escaping () -> Void
+        ) -> ScannerDestination
     ) {
         _viewModel = State(initialValue: LogViewModel(
             foodCatalogRepository: foodCatalogRepository, foodDataSource: foodDataSource, diaryRepository: diaryRepository
@@ -51,14 +61,15 @@ public struct LogSheetView<ScannerDestination: View>: View {
                     dismiss()
                 }
             }
-            .sheet(isPresented: $isShowingQuickAdd) {
-                QuickAddView(diaryRepository: viewModel.diaryRepository) {
+            // swiftlint:disable:next multiple_closures_with_trailing_closure
+            .sheet(isPresented: $isShowingQuickAdd, onDismiss: { quickAddBarcode = nil }) {
+                QuickAddView(diaryRepository: viewModel.diaryRepository, prefilledBarcode: quickAddBarcode) {
                     isShowingQuickAdd = false
                     dismiss()
                 }
             }
             .fullScreenCover(isPresented: $isShowingScanner) {
-                scannerDestination()
+                scannerDestination(handleScannedFood, handleUnknownBarcode) { isShowingScanner = false }
             }
             .task(id: searchText) {
                 try? await Task.sleep(nanoseconds: 300_000_000)
@@ -67,6 +78,17 @@ public struct LogSheetView<ScannerDestination: View>: View {
             }
             .onAppear { isSearchFocused = true }
         }
+    }
+
+    private func handleScannedFood(_ food: Food) {
+        isShowingScanner = false
+        selectedFood = food
+    }
+
+    private func handleUnknownBarcode(_ barcode: String) {
+        isShowingScanner = false
+        quickAddBarcode = barcode
+        isShowingQuickAdd = true
     }
 
     private var searchBar: some View {

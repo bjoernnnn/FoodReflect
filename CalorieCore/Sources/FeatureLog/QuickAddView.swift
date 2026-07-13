@@ -7,7 +7,14 @@ import SwiftUI
 /// Sackgasse ist.
 struct QuickAddView: View {
     let diaryRepository: any DiaryRepository
+    let prefilledBarcode: String?
     let onSaved: () -> Void
+
+    init(diaryRepository: any DiaryRepository, prefilledBarcode: String? = nil, onSaved: @escaping () -> Void) {
+        self.diaryRepository = diaryRepository
+        self.prefilledBarcode = prefilledBarcode
+        self.onSaved = onSaved
+    }
 
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
@@ -26,6 +33,13 @@ struct QuickAddView: View {
     var body: some View {
         NavigationStack {
             Form {
+                if let prefilledBarcode {
+                    Section {
+                        Label("Barcode \(prefilledBarcode) wurde nicht im Katalog gefunden.", systemImage: "barcode.viewfinder")
+                            .font(TypographyToken.caption)
+                            .foregroundStyle(ColorToken.secondaryText)
+                    }
+                }
                 Section("Schnelleintrag") {
                     TextField("Name", text: $name).focused($isNameFocused)
                     HStack {

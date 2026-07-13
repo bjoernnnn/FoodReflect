@@ -1,5 +1,6 @@
 import FeatureDashboard
 import FeatureLog
+import FeatureScanner
 import FeatureSettings
 import SwiftUI
 
@@ -29,10 +30,12 @@ struct RootView: View {
                             foodCatalogRepository: container.foodCatalogRepository,
                             foodDataSource: container.foodDataSource,
                             diaryRepository: container.diaryRepository,
-                            scannerDestination: {
-                                // Barcode-Scanner folgt in Phase 6.
-                                ContentUnavailableView(
-                                    "Scanner", systemImage: "barcode.viewfinder", description: Text("Folgt in Phase 6.")
+                            scannerDestination: { onFoodFound, onBarcodeNotFound, onCancel in
+                                ScannerView(
+                                    foodCatalogRepository: container.foodCatalogRepository,
+                                    onFoodFound: onFoodFound,
+                                    onBarcodeNotFound: onBarcodeNotFound,
+                                    onCancel: onCancel
                                 )
                             }
                         )

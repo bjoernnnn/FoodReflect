@@ -25,6 +25,7 @@ targets:
         UILaunchScreen: {}
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
+        NSCameraUsageDescription: "Zum Scannen von Barcodes, um Lebensmittel schnell zu erfassen."
     entitlements:
       path: App/KalorienTracker.entitlements
       properties:

@@ -230,11 +230,11 @@ Keine Schatten-Orgien, keine Verläufe, kein Konfetti.
 
   **Bekannte Einschränkung (Erbe aus Phase 3):** Da `search-a-licious` weiterhin unverifiziert ist, ist auch der OFF-Teil des Merges in `LogViewModel.search` nur gegen das Best-Effort-Schema getestet, nicht gegen die echte API.
 
-### Phase 6 – Barcode-Scanner
-- [ ] `DataScannerViewController`-Wrapper (UIViewControllerRepresentable), nur EAN-8/EAN-13/UPC
-- [ ] Flow: Scan → Haptik → Lookup (Cache→OFF) → Mengen-Screen mit vorausgefüllter Portion; nicht gefunden → Schnelleintrag mit Barcode vorbelegt
-- [ ] Kamera-Permission-Handling + Geräte ohne DataScanner-Support abfangen
-- [ ] **DoD:** Scan-bis-gespeichert < 5 s auf echtem Gerät
+### Phase 6 – Barcode-Scanner ✅ (code-complete, Geräte-DoD offen)
+- [x] `DataScannerViewController`-Wrapper (UIViewControllerRepresentable), nur EAN-8/EAN-13/UPC-E (UPC-A wird von VisionKit als EAN-13 erkannt)
+- [x] Flow: Scan → Haptik → Lookup (Cache→OFF via `CachingFoodCatalogRepository`, jetzt mit 3 eigenen Tests) → `AmountEntryView` mit vorausgefüllter Portion; nicht gefunden → `QuickAddView` mit Barcode-Hinweis vorbelegt
+- [x] Kamera-Permission-Handling (`AVCaptureDevice.authorizationStatus`, Link zu Einstellungen bei Ablehnung) + `DataScannerViewController.isSupported`-Check für Geräte ohne Unterstützung
+- [ ] **DoD:** Scan-bis-gespeichert < 5 s auf echtem Gerät – **nicht verifizierbar in dieser Umgebung.** `DataScannerViewController` erfordert echte Kamera-Hardware (Neural Engine); im Simulator ist `isSupported == false` (dokumentiertes Apple-Verhalten, kein Bug). Code baut fehlerfrei, Fallback-UI (nicht unterstützt / Kamera-Zugriff verweigert) ist implementiert, aber der eigentliche Scan-Flow muss auf einem echten iPhone getestet werden.
 
 ### Phase 7 – Wochenstatistik & iPhone-Widget
 - [ ] Wochen-Karte auf dem Dashboard: 7-Tage-Balkenchart + Ø-Zusammenfassung + über/unter Ziel (nutzt `GetWeekStatsUseCase`)
