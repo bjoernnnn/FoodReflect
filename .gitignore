@@ -1,0 +1,56 @@
+# Xcode
+build/
+DerivedData/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata/
+*.xcscmblueprint
+*.xccheckout
+*.moved-aside
+*.xcuserstate
+*.xcworkspace
+!default.xcworkspace
+timeline.xctimeline
+playground.xcworkspace
+
+# XcodeGen-generated project + plists (regenerate via `xcodegen generate` from project.yml)
+*.xcodeproj
+App/Info.plist
+App/KalorienTracker.entitlements
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved
+
+# Obj-C/Swift specific
+*.hmap
+
+# CocoaPods / Carthage (not used, but ignore if ever introduced)
+Pods/
+Carthage/Build/
+
+# fastlane (not used, but ignore if ever introduced)
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+# macOS
+.DS_Store
+
+# Secrets / local config - never commit
+*.xcconfig.local
+.env
+.env.*
+*secrets*
+!**/Secrets.swift.example
+
+# SwiftLint/SwiftFormat caches
+.swiftlint_cache/
