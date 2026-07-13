@@ -19,6 +19,10 @@ public struct MacroBar: View {
         return min(currentGrams / targetGrams, 1)
     }
 
+    private var percent: Int {
+        Int((progress * 100).rounded())
+    }
+
     public var body: some View {
         VStack(alignment: .leading, spacing: Spacing.xs) {
             HStack {
@@ -29,6 +33,10 @@ public struct MacroBar: View {
                 Text("\(Int(currentGrams))g / \(Int(targetGrams))g")
                     .font(TypographyToken.caption)
                     .foregroundStyle(ColorToken.secondaryText)
+                Text("· \(percent)%")
+                    .font(TypographyToken.caption)
+                    .foregroundStyle(tint)
+                    .frame(minWidth: 36, alignment: .trailing)
             }
             ProgressView(value: progress)
                 .tint(tint)

@@ -19,6 +19,9 @@ public struct SegmentedProgressRing: View {
     private let segments: [RingSegment]
     private let total: Double
     private let lineWidth: CGFloat
+    /// Startet bei 0 und animiert beim ersten Erscheinen auf 1 hoch, damit der Ring sichtbar
+    /// „einschwingt" statt sofort mit dem fertigen Wert dazustehen.
+    @State private var appearProgress: Double = 0
 
     public init(segments: [RingSegment], total: Double, lineWidth: CGFloat = 14) {
         self.segments = segments
@@ -41,12 +44,14 @@ public struct SegmentedProgressRing: View {
 
             ForEach(Array(segmentArcs.enumerated()), id: \.offset) { _, arc in
                 Circle()
-                    .trim(from: arc.start, to: arc.end)
+                    .trim(from: arc.start * appearProgress, to: arc.end * appearProgress)
                     .stroke(arc.color, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
                     .rotationEffect(.degrees(-90))
             }
         }
         .animation(.easeInOut, value: segmentArcs)
+        .animation(.easeOut(duration: 0.8), value: appearProgress)
+        .onAppear { appearProgress = 1 }
         .accessibilityLabel("Makro-Fortschritt")
         .accessibilityValue(isOverTarget ? "Tagesziel überschritten" : "\(Int(sumOfSegments)) von \(Int(total)) Kalorien")
     }

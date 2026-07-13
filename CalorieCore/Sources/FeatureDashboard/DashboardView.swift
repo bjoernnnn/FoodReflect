@@ -99,7 +99,7 @@ public struct DashboardView<LogSheetDestination: View>: View {
 
             Section("Heutige Einträge") {
                 if viewModel.todayEntries.isEmpty {
-                    Text("Noch nichts erfasst.")
+                    Label("Noch nichts erfasst – tippe unten auf Erfassen, um zu starten.", systemImage: "tray")
                         .font(TypographyToken.body)
                         .foregroundStyle(ColorToken.secondaryText)
                 } else {
@@ -116,6 +116,7 @@ public struct DashboardView<LogSheetDestination: View>: View {
         }
         .listStyle(.plain)
         .scrollContentBackground(.hidden)
+        .sensoryFeedback(.success, trigger: viewModel.todayEntries.count)
     }
 
     private func entryRow(_ entry: DiaryEntry) -> some View {
@@ -135,8 +136,12 @@ public struct DashboardView<LogSheetDestination: View>: View {
     private func remainingKcalSection(_ totals: DayTotals) -> some View {
         VStack(spacing: Spacing.sm) {
             ZStack {
+                Circle()
+                    .fill(ColorToken.accent.opacity(0.12))
+                    .frame(width: 260, height: 260)
+                    .blur(radius: 30)
                 SegmentedProgressRing(segments: macroRingSegments(totals), total: Double(totals.goals.dailyKcal))
-                    .frame(width: 200, height: 200)
+                    .frame(width: 230, height: 230)
                     .accessibilityHidden(true)
                 VStack {
                     Text("\(Int(totals.remainingKcal))")
@@ -145,6 +150,7 @@ public struct DashboardView<LogSheetDestination: View>: View {
                         .font(TypographyToken.caption)
                         .foregroundStyle(ColorToken.secondaryText)
                 }
+                .multilineTextAlignment(.center)
                 .accessibilityElement(children: .combine)
                 .accessibilityIdentifier("dashboard.remainingKcal")
             }
@@ -152,8 +158,10 @@ public struct DashboardView<LogSheetDestination: View>: View {
             Text("\(Int(totals.kcal)) konsumiert / \(totals.goals.dailyKcal) Ziel")
                 .font(TypographyToken.body)
                 .foregroundStyle(ColorToken.secondaryText)
+                .multilineTextAlignment(.center)
                 .accessibilityIdentifier("dashboard.consumedSummary")
         }
+        .frame(maxWidth: .infinity)
         .padding(.top, Spacing.lg)
     }
 

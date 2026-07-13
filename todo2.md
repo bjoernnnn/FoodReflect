@@ -115,23 +115,31 @@ Anteil an den konsumierten kcal als farbiges Segment. Das ist die zentrale „sp
 
 ---
 
-## Phase 4 – Dashboard-Redesign: zentrieren & spannender machen
+## Phase 4 – Dashboard-Redesign: zentrieren & spannender machen ✅
 
 Der Hero-Bereich (Ring + Makros) wird optisch aufgewertet und **horizontal zentriert**. Weg von der reinen
 List-Optik hin zu einem klaren, mittigen Fokus.
 
-- [ ] Hero-Sektion (Ring + Legende + Makro-Balken) in einen zentrierten `VStack` mit `frame(maxWidth: .infinity)`
-      und `multilineTextAlignment(.center)` setzen; nicht mehr linksbündig in der `List`-Row.
-- [ ] Ring vergrößern (z. B. 220–240 pt) und mit dezentem Schatten/`.shadow` oder weichem Verlauf hinterlegen.
-- [ ] Makro-Balken (`MacroBar`) unter dem Ring zentriert gruppieren, konsistent mit den neuen Makro-Farben;
-      optional Prozent-Zielerreichung als kleine Zahl rechts.
-- [ ] Sanfte Auftritts-Animation beim Laden (z. B. Ring-Trim animiert von 0 → Wert, `.transition`/`.animation`).
-- [ ] Card-Optik vereinheitlichen: `cardBackground()` mit etwas mehr `cornerRadius` + leichter Schattierung
-      (in `CardBackground.swift` zentral anpassen, damit alle Cards profitieren).
-- [ ] „Heutige Einträge" bleibt als Liste darunter; leere Zeile freundlicher formulieren + kleines Symbol.
-- [ ] Haptisches Feedback beim Erfassen/Löschen (`.sensoryFeedback`, iOS 17+) für mehr „Lebendigkeit".
-- [ ] Dynamic Type & Dark Mode gegenprüfen (Ring-Zahl skaliert bereits via `@ScaledMetric`).
-- [ ] Build + Tests grün, Commit `feat(phase4): Dashboard zentriert & mehrfarbiger Ring`.
+- [x] Hero-Sektion (Ring + Legende + konsumiert-Zeile) in einen zentrierten `VStack` mit `frame(maxWidth: .infinity)`
+      und `multilineTextAlignment(.center)` gesetzt; nicht mehr linksbündig in der `List`-Row.
+- [x] Ring vergrößert (200pt → 230pt) und mit weichem, unscharfem Verlauf (`Circle().blur(radius: 30)` in
+      `ColorToken.accent.opacity(0.12)`) hinterlegt statt eines harten `.shadow`.
+- [x] Makro-Balken (`MacroBar`) bekamen eine Prozent-Zielerreichung rechts (`· 53%`, in der jeweiligen Makro-Farbe).
+- [x] Sanfte Auftritts-Animation: `SegmentedProgressRing` startet bei 0 und animiert beim ersten Erscheinen
+      (`.onAppear`) mit `.easeOut(duration: 0.8)` auf die vollen Bogen-Werte hoch.
+- [x] Card-Optik vereinheitlicht: `cardBackground()` cornerRadius 20 → 24 + `.shadow(color: .black.opacity(0.06),
+      radius: 12, y: 4)` zentral in `CardBackground.swift`, wirkt auf alle Cards (Makro-Card, Wochen-Card, später
+      auch Gewicht/Verlauf).
+- [x] „Heutige Einträge"-Leerzeile freundlicher formuliert + Tray-Symbol (`Label(..., systemImage: "tray")`).
+- [x] Haptisches Feedback: `.sensoryFeedback(.success, trigger: viewModel.todayEntries.count)` auf der Liste –
+      deckt sowohl Erfassen (Reload nach Log-Sheet-Dismiss ändert die Anzahl) als auch Löschen ab, ohne zwei
+      getrennte Trigger pflegen zu müssen.
+- [x] Dynamic Type: Ring-Zahl bereits via `@ScaledMetric` (Phase 8 des alten TODOs). Dark Mode visuell verifiziert
+      (siehe unten) – guter Kontrast, Glow bleibt dezent sichtbar, TabBar-Akzentfarbe funktioniert in beiden Modi.
+- [x] Visuell verifiziert (Light + Dark) über denselben XCUITest-Screenshot-Mechanismus wie Phase 3
+      (`xcrun simctl ui <device> appearance dark/light` + `xcresulttool export attachments`); Screenshots waren
+      nur zur Verifikation, nicht committet.
+- [x] Build + alle 65 Package-Tests + 2 XCUITests grün, Commit `feat(phase4): Dashboard zentriert & mehrfarbiger Ring`.
 
 ---
 

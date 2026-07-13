@@ -6,7 +6,8 @@ public struct CardBackground: ViewModifier {
     public func body(content: Content) -> some View {
         content
             .padding(Spacing.md)
-            .background(ColorToken.secondaryBackground, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+            .background(ColorToken.secondaryBackground, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+            .shadow(color: .black.opacity(0.06), radius: 12, y: 4)
     }
 }
 
