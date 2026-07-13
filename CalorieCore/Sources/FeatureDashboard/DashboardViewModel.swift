@@ -10,8 +10,8 @@ public final class DashboardViewModel {
     public private(set) var weekStats: WeekStats?
 
     private let diaryRepository: any DiaryRepository
+    private let goalsRepository: any GoalsRepository
     private let widgetRefreshing: any WidgetRefreshing
-    private let getDayTotals: GetDayTotalsUseCase
     private let getWeekStats: GetWeekStatsUseCase
     private let calendar: Calendar
 
@@ -22,8 +22,8 @@ public final class DashboardViewModel {
         calendar: Calendar = .current
     ) {
         self.diaryRepository = diaryRepository
+        self.goalsRepository = goalsRepository
         self.widgetRefreshing = widgetRefreshing
-        getDayTotals = GetDayTotalsUseCase(diaryRepository: diaryRepository, goalsRepository: goalsRepository)
         getWeekStats = GetWeekStatsUseCase(diaryRepository: diaryRepository, goalsRepository: goalsRepository)
         self.calendar = calendar
     }
@@ -41,9 +41,12 @@ public final class DashboardViewModel {
     public func load() async {
         state = .loading
         do {
+            // Ein Fetch für heutige Einträge, wiederverwendet für Liste + Totals
+            // (statt ihn ein zweites Mal über eine volle UseCase-Instanz nachzuladen).
             let entries = try await diaryRepository.entries(on: todayKey)
             todayEntries = entries.sorted { $0.consumedAt > $1.consumedAt }
-            state = try await .loaded(getDayTotals(dayKey: todayKey))
+            let goals = try await goalsRepository.currentGoals() ?? GetDayTotalsUseCase.noGoals
+            state = .loaded(GetDayTotalsUseCase.aggregate(dayKey: todayKey, entries: entries, goals: goals))
         } catch {
             state = .error(message: "Daten konnten nicht geladen werden.")
         }

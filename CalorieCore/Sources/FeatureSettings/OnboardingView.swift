@@ -7,6 +7,9 @@ import SwiftUI
 public struct OnboardingView: View {
     @State private var viewModel: OnboardingViewModel
     @FocusState private var isInputFocused: Bool
+    /// `TypographyToken.remainingKcal` ist eine feste Größe; hier per `@ScaledMetric`
+    /// überschrieben, damit die zentrale Eingabe auf Dynamic-Type-Änderungen reagiert.
+    @ScaledMetric(relativeTo: .largeTitle) private var remainingKcalFontSize: CGFloat = 56
     private let onComplete: () -> Void
 
     public init(goalsRepository: any GoalsRepository, onComplete: @escaping () -> Void) {
@@ -30,9 +33,11 @@ public struct OnboardingView: View {
             TextField("Tagesziel", text: $viewModel.dailyKcalInput)
                 .keyboardType(.numberPad)
                 .focused($isInputFocused)
-                .font(TypographyToken.remainingKcal)
+                .font(.system(size: remainingKcalFontSize, weight: .bold, design: .rounded))
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: 200)
+                .accessibilityLabel("Tagesziel in Kalorien")
+                .accessibilityIdentifier("onboarding.kcalField")
 
             Text("kcal / Tag")
                 .font(TypographyToken.caption)
@@ -67,6 +72,7 @@ public struct OnboardingView: View {
             .buttonStyle(.primary)
             .disabled(!viewModel.canConfirm || viewModel.isSaving)
             .padding(.horizontal, Spacing.lg)
+            .accessibilityIdentifier("onboarding.confirmButton")
         }
         .padding(.vertical, Spacing.xl)
         .onAppear { isInputFocused = true }

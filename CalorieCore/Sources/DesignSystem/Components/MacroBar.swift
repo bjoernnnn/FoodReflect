@@ -33,6 +33,9 @@ public struct MacroBar: View {
             ProgressView(value: progress)
                 .tint(tint)
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(title)
+        .accessibilityValue("\(Int(currentGrams)) von \(Int(targetGrams)) Gramm")
     }
 }
 

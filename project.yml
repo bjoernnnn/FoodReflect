@@ -96,13 +96,30 @@ targets:
       - package: CalorieCore
         product: DesignSystem
 
+  KalorienTrackerUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: KalorienTrackerUITests
+    settings:
+      base:
+        SWIFT_VERSION: 5.10
+        GENERATE_INFOPLIST_FILE: true
+        TEST_TARGET_NAME: KalorienTracker
+    dependencies:
+      - target: KalorienTracker
+
 schemes:
   KalorienTracker:
     build:
       targets:
         KalorienTracker: all
+        KalorienTrackerUITests: [test]
     test:
       config: Debug
       gatherCoverageData: true
+      targets:
+        - KalorienTrackerUITests
     run:
       config: Debug

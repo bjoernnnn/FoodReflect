@@ -24,5 +24,5 @@ public struct GetDayTotalsUseCase: Sendable {
         return DayTotals(dayKey: dayKey, kcal: kcal, protein: protein, carbs: carbs, fat: fat, goals: goals)
     }
 
-    static let noGoals = MacroGoals(dailyKcal: 0, proteinGrams: 0, carbsGrams: 0, fatGrams: 0, isCustomized: false)
+    public static let noGoals = MacroGoals(dailyKcal: 0, proteinGrams: 0, carbsGrams: 0, fatGrams: 0, isCustomized: false)
 }

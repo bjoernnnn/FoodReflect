@@ -10,6 +10,10 @@ import SwiftUI
 public struct DashboardView<SettingsDestination: View, LogSheetDestination: View>: View {
     @State private var viewModel: DashboardViewModel
     @State private var isShowingLogSheet = false
+    @Environment(\.scenePhase) private var scenePhase
+    /// `TypographyToken.remainingKcal` ist eine feste Größe; hier per `@ScaledMetric`
+    /// überschrieben, damit die eine Zahl, die zählt, auf Dynamic-Type-Änderungen reagiert.
+    @ScaledMetric(relativeTo: .largeTitle) private var remainingKcalFontSize: CGFloat = 56
     private let settingsDestination: () -> SettingsDestination
     private let logSheetDestination: () -> LogSheetDestination
 
@@ -38,6 +42,7 @@ public struct DashboardView<SettingsDestination: View, LogSheetDestination: View
                         } label: {
                             Image(systemName: "gearshape")
                         }
+                        .accessibilityLabel("Einstellungen")
                     }
                 }
                 .safeAreaInset(edge: .bottom) {
@@ -47,6 +52,12 @@ public struct DashboardView<SettingsDestination: View, LogSheetDestination: View
                     logSheetDestination()
                 }
                 .task { await viewModel.load() }
+                // Deckt Mitternachts-/Zeitzonenwechsel ab: dayKey wird bei jeder
+                // Rückkehr in den Vordergrund frisch berechnet statt gecacht zu bleiben.
+                .onChange(of: scenePhase) { _, newPhase in
+                    guard newPhase == .active else { return }
+                    Task { await viewModel.load() }
+                }
         }
     }
 
@@ -65,6 +76,7 @@ public struct DashboardView<SettingsDestination: View, LogSheetDestination: View
         .buttonStyle(.primary)
         .padding(.horizontal, Spacing.md)
         .padding(.bottom, Spacing.sm)
+        .accessibilityIdentifier("dashboard.logButton")
     }
 
     @ViewBuilder
@@ -131,6 +143,7 @@ public struct DashboardView<SettingsDestination: View, LogSheetDestination: View
             Spacer()
             Text("\(Int(entry.kcal)) kcal").font(TypographyToken.body)
         }
+        .accessibilityElement(children: .combine)
     }
 
     private func remainingKcalSection(_ totals: DayTotals) -> some View {
@@ -138,17 +151,21 @@ public struct DashboardView<SettingsDestination: View, LogSheetDestination: View
             ZStack {
                 ProgressRing(progress: totals.goals.dailyKcal > 0 ? totals.kcal / Double(totals.goals.dailyKcal) : 0)
                     .frame(width: 200, height: 200)
+                    .accessibilityHidden(true)
                 VStack {
                     Text("\(Int(totals.remainingKcal))")
-                        .font(TypographyToken.remainingKcal)
+                        .font(.system(size: remainingKcalFontSize, weight: .bold, design: .rounded))
                     Text("kcal übrig")
                         .font(TypographyToken.caption)
                         .foregroundStyle(ColorToken.secondaryText)
                 }
+                .accessibilityElement(children: .combine)
+                .accessibilityIdentifier("dashboard.remainingKcal")
             }
             Text("\(Int(totals.kcal)) konsumiert / \(totals.goals.dailyKcal) Ziel")
                 .font(TypographyToken.body)
                 .foregroundStyle(ColorToken.secondaryText)
+                .accessibilityIdentifier("dashboard.consumedSummary")
         }
         .padding(.top, Spacing.lg)
     }
@@ -164,6 +181,10 @@ public struct DashboardView<SettingsDestination: View, LogSheetDestination: View
                     .foregroundStyle(.pink)
             }
             .frame(height: 120)
+            .accessibilityLabel("Makro-Verteilung")
+            .accessibilityValue(
+                "\(Int(totals.protein))g Protein, \(Int(totals.carbs))g Kohlenhydrate, \(Int(totals.fat))g Fett"
+            )
 
             MacroBar(title: "Protein", currentGrams: totals.protein, targetGrams: Double(totals.goals.proteinGrams), tint: .blue)
             MacroBar(
@@ -200,6 +221,10 @@ public struct DashboardView<SettingsDestination: View, LogSheetDestination: View
             }
             .chartXAxis(.hidden)
             .frame(height: 100)
+            .accessibilityLabel("Wochenverlauf")
+            .accessibilityValue(
+                "Durchschnitt \(Int(weekStats.averageKcal)) Kilokalorien pro Tag, \(Int(abs(delta))) \(deltaDirection) Ziel"
+            )
 
             Text("Ø \(Int(weekStats.averageKcal)) kcal/Tag · \(Int(abs(delta))) kcal \(deltaDirection) Ziel")
                 .font(TypographyToken.caption)

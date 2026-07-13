@@ -35,6 +35,7 @@ struct CalorieWidgetEntryView: View {
             ZStack {
                 ProgressRing(progress: progress, lineWidth: 8)
                     .frame(width: 70, height: 70)
+                    .accessibilityHidden(true)
                 Text("\(Int(remaining))")
                     .font(.system(size: 20, weight: .bold, design: .rounded))
                     .minimumScaleFactor(0.6)
@@ -43,6 +44,7 @@ struct CalorieWidgetEntryView: View {
                 .font(.caption2)
                 .foregroundStyle(.secondary)
         }
+        .accessibilityElement(children: .combine)
     }
 
     private var circularView: some View {

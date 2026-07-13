@@ -48,9 +48,13 @@ struct QuickAddView: View {
                     }
                 }
                 Section("Schnelleintrag") {
-                    TextField("Name", text: $name).focused($isNameFocused)
+                    TextField("Name", text: $name)
+                        .focused($isNameFocused)
+                        .accessibilityIdentifier("quickAdd.nameField")
                     HStack {
-                        TextField("kcal", text: $kcalText).keyboardType(.numberPad)
+                        TextField("kcal", text: $kcalText)
+                            .keyboardType(.numberPad)
+                            .accessibilityIdentifier("quickAdd.kcalField")
                         Text("kcal")
                     }
                 }
@@ -81,6 +85,7 @@ struct QuickAddView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Speichern") { Task { await save() } }
                         .disabled(!canSave || isSaving)
+                        .accessibilityIdentifier("quickAdd.saveButton")
                 }
             }
             .onAppear { isNameFocused = true }

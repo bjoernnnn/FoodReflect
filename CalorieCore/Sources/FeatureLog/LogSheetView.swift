@@ -112,6 +112,7 @@ public struct LogSheetView<ScannerDestination: View>: View {
                     .font(.title3)
             }
             .frame(width: 44, height: 44)
+            .accessibilityLabel("Barcode scannen")
         }
         .padding(Spacing.md)
     }
@@ -121,6 +122,7 @@ public struct LogSheetView<ScannerDestination: View>: View {
             isShowingQuickAdd = true
         }
         .padding(Spacing.md)
+        .accessibilityIdentifier("logSheet.quickAddButton")
     }
 
     @ViewBuilder
