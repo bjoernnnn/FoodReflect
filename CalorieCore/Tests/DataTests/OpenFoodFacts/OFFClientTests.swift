@@ -50,11 +50,11 @@ struct OFFClientTests {
                 Data(OFFFixtures.nutellaProduct.utf8)
             )
         }
-        let sut = OFFClient(session: MockURLProtocol.makeSession(), userAgent: "KalorienTracker/1.0 (test@example.com)")
+        let sut = OFFClient(session: MockURLProtocol.makeSession(), userAgent: "FoodReflect/1.0 (test@example.com)")
 
         _ = try await sut.fetchProduct(barcode: "3017620422003")
 
-        #expect(capturedRequest?.value(forHTTPHeaderField: "User-Agent") == "KalorienTracker/1.0 (test@example.com)")
+        #expect(capturedRequest?.value(forHTTPHeaderField: "User-Agent") == "FoodReflect/1.0 (test@example.com)")
     }
 
     @Test("status: 0 (nicht gefunden) liefert nil statt Fehler")

@@ -1,4 +1,4 @@
-# KalorienTracker
+# FoodReflect
 
 Minimalistischer Kalorientracker (iOS 17+, SwiftUI). Ein Screen-Prinzip: Dashboard mit
 Restkalorien, blitzschnelles Erfassen per Barcode oder Suche. Vollständiger Scope, alle
@@ -11,7 +11,7 @@ Das Xcode-Projekt wird nicht eingecheckt, sondern per [XcodeGen](https://github.
 ```sh
 brew install xcodegen
 xcodegen generate
-open KalorienTracker.xcodeproj
+open FoodReflect.xcodeproj
 ```
 
 Nach jeder Änderung an `project.yml` erneut `xcodegen generate` ausführen.
@@ -20,7 +20,7 @@ Nach jeder Änderung an `project.yml` erneut `xcodegen generate` ausführen.
 
 ```sh
 # App + Widget-Extension
-xcodebuild test -project KalorienTracker.xcodeproj -scheme KalorienTracker \
+xcodebuild test -project FoodReflect.xcodeproj -scheme FoodReflect \
   -destination 'platform=iOS Simulator,name=iPhone 16 Pro'
 
 # Package (Domain, Data, Features) – von innerhalb CalorieCore/
@@ -28,9 +28,9 @@ cd CalorieCore && xcodebuild test -scheme CalorieCore-Package \
   -destination 'platform=iOS Simulator,name=iPhone 16 Pro'
 
 # UI-Smoke-Test (XCUITest)
-xcodebuild test -project KalorienTracker.xcodeproj -scheme KalorienTracker \
+xcodebuild test -project FoodReflect.xcodeproj -scheme FoodReflect \
   -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
-  -only-testing:KalorienTrackerUITests
+  -only-testing:FoodReflectUITests
 ```
 
 ## Lint & Format
@@ -43,7 +43,7 @@ swiftformat .
 ## Architekturüberblick
 
 ```
-KalorienTracker/
+FoodReflect/
 ├── App/                  Composition Root: AppContainer (DI), RootView (Onboarding/Dashboard-Weiche)
 ├── Widget/                WidgetKit-Extension, liest den App-Group-Store read-only
 └── CalorieCore/           Lokales Swift Package

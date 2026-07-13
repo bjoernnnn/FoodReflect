@@ -3,7 +3,7 @@ import XCTest
 /// UI-Smoke-Test: Onboarding → Schnelleintrag → Dashboard-Zahlen stimmen.
 /// Startet mit `-UITestReset` (siehe AppContainer) für einen deterministischen,
 /// leeren In-Memory-Store bei jedem Testlauf.
-final class KalorienTrackerUITests: XCTestCase {
+final class FoodReflectUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
     }

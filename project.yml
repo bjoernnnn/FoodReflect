@@ -1,4 +1,4 @@
-name: KalorienTracker
+name: FoodReflect
 options:
   bundleIdPrefix: com.bjoernnnn.foodreflect
   deploymentTarget:
@@ -10,7 +10,7 @@ packages:
     path: CalorieCore
 
 targets:
-  KalorienTracker:
+  FoodReflect:
     type: application
     platform: iOS
     deploymentTarget: "17.0"
@@ -18,16 +18,17 @@ targets:
       - path: App
         excludes:
           - "Info.plist"
-          - "KalorienTracker.entitlements"
+          - "FoodReflect.entitlements"
     info:
       path: App/Info.plist
       properties:
+        CFBundleDisplayName: FoodReflect
         UILaunchScreen: {}
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         NSCameraUsageDescription: "Zum Scannen von Barcodes, um Lebensmittel schnell zu erfassen."
     entitlements:
-      path: App/KalorienTracker.entitlements
+      path: App/FoodReflect.entitlements
       properties:
         com.apple.security.application-groups:
           - group.com.bjoernnnn.foodreflect
@@ -71,7 +72,7 @@ targets:
     info:
       path: Widget/Info.plist
       properties:
-        CFBundleDisplayName: Kalorien-Widget
+        CFBundleDisplayName: FoodReflect
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     entitlements:
@@ -96,30 +97,30 @@ targets:
       - package: CalorieCore
         product: DesignSystem
 
-  KalorienTrackerUITests:
+  FoodReflectUITests:
     type: bundle.ui-testing
     platform: iOS
     deploymentTarget: "17.0"
     sources:
-      - path: KalorienTrackerUITests
+      - path: FoodReflectUITests
     settings:
       base:
         SWIFT_VERSION: 5.10
         GENERATE_INFOPLIST_FILE: true
-        TEST_TARGET_NAME: KalorienTracker
+        TEST_TARGET_NAME: FoodReflect
     dependencies:
-      - target: KalorienTracker
+      - target: FoodReflect
 
 schemes:
-  KalorienTracker:
+  FoodReflect:
     build:
       targets:
-        KalorienTracker: all
-        KalorienTrackerUITests: [test]
+        FoodReflect: all
+        FoodReflectUITests: [test]
     test:
       config: Debug
       gatherCoverageData: true
       targets:
-        - KalorienTrackerUITests
+        - FoodReflectUITests
     run:
       config: Debug

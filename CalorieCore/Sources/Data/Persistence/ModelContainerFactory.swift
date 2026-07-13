@@ -15,7 +15,7 @@ public enum ModelContainerFactory {
         guard let groupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupID) else {
             throw Error.appGroupContainerUnavailable(appGroupID)
         }
-        let storeURL = groupURL.appending(path: "KalorienTracker.sqlite")
+        let storeURL = groupURL.appending(path: "FoodReflect.sqlite")
         let configuration = ModelConfiguration(schema: schema, url: storeURL)
         return try ModelContainer(for: schema, configurations: [configuration])
     }

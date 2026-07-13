@@ -12,7 +12,7 @@ public struct OFFClient: FoodDataSource, Sendable {
 
     public init(
         session: URLSession = .shared,
-        userAgent: String = "KalorienTracker/1.0 (kontakt@bjoernnnn.foodreflect.example)",
+        userAgent: String = "FoodReflect/1.0 (kontakt@bjoernnnn.foodreflect.example)",
         productBaseURL: URL = URL(string: "https://world.openfoodfacts.org")!,
         searchBaseURL: URL = URL(string: "https://search.openfoodfacts.org")!
     ) {

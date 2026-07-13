@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct KalorienTrackerApp: App {
+struct FoodReflectApp: App {
     @State private var container = AppContainer()
 
     var body: some Scene {
