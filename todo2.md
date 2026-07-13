@@ -75,36 +75,43 @@ verdrahtet aber jetzt eine `RootTabView`. Composition Root bleibt der einzige Or
 
 ---
 
-## Phase 3 – Mehrfarbiger Makro-Ring (Kern des Redesigns)
+## Phase 3 – Mehrfarbiger Makro-Ring (Kern des Redesigns) ✅
 
 Der einfarbige Rest-kcal-Ring wird durch einen **segmentierten Ring** ersetzt: jedes Makro bekommt seinen
 Anteil an den konsumierten kcal als farbiges Segment. Das ist die zentrale „spannendere" Design-Änderung.
 
 **Farbschema (zentral als Tokens definieren, nicht inline):**
 
-- [ ] In `ColorToken.swift` Makro-Farben ergänzen (statt inline `.blue/.orange/.pink` überall):
-  - `proteinColor` = Blau (z. B. `Color(red: 0.20, green: 0.55, blue: 0.95)`)
-  - `carbsColor`   = Orange/Amber (z. B. `Color(red: 0.98, green: 0.62, blue: 0.09)`)
-  - `fatColor`     = Pink/Magenta (z. B. `Color(red: 0.93, green: 0.31, blue: 0.55)`)
-  - Danach `DashboardView` + `MacroBar`-Aufrufe auf diese Tokens umstellen (Single Source of Truth).
+- [x] In `ColorToken.swift` Makro-Farben ergänzt (statt inline `.blue/.orange/.pink` überall):
+  `proteinColor` (Blau), `carbsColor` (Orange/Amber), `fatColor` (Pink/Magenta) – exakt wie vorgeschlagen.
+  `DashboardView` (Ring, Pie-Chart, `MacroBar`-Aufrufe) und Widget nutzen jetzt ausschließlich diese Tokens.
 
 **Neue Komponente `SegmentedProgressRing`:**
 
-- [ ] Neue Datei `CalorieCore/Sources/DesignSystem/Components/SegmentedProgressRing.swift`.
-- [ ] API: nimmt Segmente als `[(value: Double, color: Color)]` + Gesamt-Referenzwert (kcal-Ziel) entgegen.
-- [ ] Rendering: gestapelte `Circle().trim(from:to:)`-Bögen, jedes Segment beginnt am Ende des vorherigen
-      (kumulative Start-/End-Winkel), `lineCap: .round`, `rotationEffect(-90°)`, sanfte `.easeInOut`-Animation
-      auf Wertänderung.
-- [ ] Rest-Bogen (noch nicht verbraucht) in `ColorToken.secondaryBackground` als Track darunter.
-- [ ] Überschreitung des Ziels sichtbar machen (z. B. letzter Bogen in `ColorToken.warning`, wenn Summe > Ziel).
-- [ ] `#Preview` mit Beispielwerten; sinnvoller `accessibilityLabel`/`accessibilityValue` (Ring bleibt sonst hidden).
-- [ ] `ProgressRing` (alt) beibehalten für das Widget oder ebenfalls migrieren – im Widget mindestens die neuen
-      Makro-Farben nutzen, damit App und Widget konsistent wirken.
+- [x] Neue Datei `CalorieCore/Sources/DesignSystem/Components/SegmentedProgressRing.swift`.
+- [x] API: `SegmentedProgressRing(segments: [RingSegment], total: Double, lineWidth: CGFloat = 14)`, wobei
+      `RingSegment` ein kleiner `value`+`color`-Wertetyp ist (klarer als anonyme Tupel).
+- [x] Rendering: gestapelte `Circle().trim(from:to:)`-Bögen, kumulative Start-/End-Winkel, `lineCap: .round`,
+      `rotationEffect(-90°)`, `.easeInOut`-Animation auf Wertänderung.
+- [x] Rest-Bogen in `ColorToken.secondaryBackground` als Track darunter.
+- [x] Überschreitung des Ziels sichtbar gemacht: Segmente skalieren dann auf die tatsächliche Summe (Ring wird
+      voll statt einfach abgeschnitten), der Übertrag wird als eigener Bogen in `ColorToken.warning` angehängt.
+- [x] `#Preview` für „im Ziel" und „über dem Ziel"; `accessibilityLabel`/`accessibilityValue` direkt auf der
+      Komponente (Aufrufer können sie zusätzlich `accessibilityHidden` setzen, wenn ein kombiniertes Eltern-Element
+      wie im Dashboard sinnvoller ist – dort weiterhin so gelöst, um Doppel-Ansagen zu vermeiden).
+- [x] **Entscheidung:** komplett auf `SegmentedProgressRing` migriert statt das alte `ProgressRing` nur fürs
+      Widget zu behalten – auch das Widget zeigt jetzt die echte Makro-Aufteilung (nicht nur Gesamtfortschritt),
+      für maximale Konsistenz App↔Widget. Das alte `ProgressRing.swift` war danach komplett unbenutzt und wurde
+      gelöscht (kein totes UI-Code).
 
 **Ring-Zentrum:**
 
-- [ ] In der Ring-Mitte weiterhin große Rest-kcal-Zahl (`@ScaledMetric`, `rounded`), darunter „kcal übrig".
-- [ ] Kleine Makro-Legende (drei farbige Punkte + `P / K / F`-Kürzel) direkt unter dem Ring, zentriert.
+- [x] Rest-kcal-Zahl bleibt in der Ring-Mitte (`@ScaledMetric`, `rounded`), darunter „kcal übrig".
+- [x] Makro-Legende (drei farbige Punkte + `P`/`K`/`F`) direkt unter dem Ring, zentriert.
+- [x] Visuell verifiziert über einen temporären XCUITest-Screenshot-Attachment (`xcrun xcresulttool export
+      attachments`) statt unzuverlässiger Klick-Automatisierung – Ring, Legende, Farben und TabBar sehen wie
+      erwartet aus (Screenshot danach nicht committet, war nur zur Verifikation).
+- [x] Build + alle 65 Package-Tests + App+Widget-Build grün, Commit `feat(phase3): mehrfarbiger Makro-Ring`.
 
 ---
 

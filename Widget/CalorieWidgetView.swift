@@ -16,6 +16,17 @@ struct CalorieWidgetEntryView: View {
         return totals.kcal / Double(totals.goals.dailyKcal)
     }
 
+    /// Dieselbe Makro-Farbaufteilung wie im Dashboard-Ring der App, für einen konsistenten
+    /// Auftritt zwischen Home-Screen-Widget und App.
+    private var macroSegments: [RingSegment] {
+        guard let totals = entry.totals else { return [] }
+        return [
+            RingSegment(value: max(totals.protein * 4, 0), color: ColorToken.proteinColor),
+            RingSegment(value: max(totals.carbs * 4, 0), color: ColorToken.carbsColor),
+            RingSegment(value: max(totals.fat * 9, 0), color: ColorToken.fatColor)
+        ]
+    }
+
     var body: some View {
         Group {
             switch family {
@@ -33,7 +44,7 @@ struct CalorieWidgetEntryView: View {
     private var smallView: some View {
         VStack(spacing: Spacing.xs) {
             ZStack {
-                ProgressRing(progress: progress, lineWidth: 8)
+                SegmentedProgressRing(segments: macroSegments, total: Double(entry.totals?.goals.dailyKcal ?? 0), lineWidth: 8)
                     .frame(width: 70, height: 70)
                     .accessibilityHidden(true)
                 Text("\(Int(remaining))")

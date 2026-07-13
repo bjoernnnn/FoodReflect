@@ -133,9 +133,9 @@ public struct DashboardView<LogSheetDestination: View>: View {
     }
 
     private func remainingKcalSection(_ totals: DayTotals) -> some View {
-        VStack(spacing: Spacing.xs) {
+        VStack(spacing: Spacing.sm) {
             ZStack {
-                ProgressRing(progress: totals.goals.dailyKcal > 0 ? totals.kcal / Double(totals.goals.dailyKcal) : 0)
+                SegmentedProgressRing(segments: macroRingSegments(totals), total: Double(totals.goals.dailyKcal))
                     .frame(width: 200, height: 200)
                     .accessibilityHidden(true)
                 VStack {
@@ -148,6 +148,7 @@ public struct DashboardView<LogSheetDestination: View>: View {
                 .accessibilityElement(children: .combine)
                 .accessibilityIdentifier("dashboard.remainingKcal")
             }
+            macroLegend
             Text("\(Int(totals.kcal)) konsumiert / \(totals.goals.dailyKcal) Ziel")
                 .font(TypographyToken.body)
                 .foregroundStyle(ColorToken.secondaryText)
@@ -156,15 +157,39 @@ public struct DashboardView<LogSheetDestination: View>: View {
         .padding(.top, Spacing.lg)
     }
 
+    private func macroRingSegments(_ totals: DayTotals) -> [RingSegment] {
+        [
+            RingSegment(value: max(totals.protein * 4, 0), color: ColorToken.proteinColor),
+            RingSegment(value: max(totals.carbs * 4, 0), color: ColorToken.carbsColor),
+            RingSegment(value: max(totals.fat * 9, 0), color: ColorToken.fatColor)
+        ]
+    }
+
+    private var macroLegend: some View {
+        HStack(spacing: Spacing.md) {
+            legendDot(color: ColorToken.proteinColor, label: "P")
+            legendDot(color: ColorToken.carbsColor, label: "K")
+            legendDot(color: ColorToken.fatColor, label: "F")
+        }
+        .accessibilityHidden(true)
+    }
+
+    private func legendDot(color: Color, label: String) -> some View {
+        HStack(spacing: Spacing.xs) {
+            Circle().fill(color).frame(width: 8, height: 8)
+            Text(label).font(TypographyToken.caption).foregroundStyle(ColorToken.secondaryText)
+        }
+    }
+
     private func macrosSection(_ totals: DayTotals) -> some View {
         VStack(spacing: Spacing.md) {
             Chart {
                 SectorMark(angle: .value("Protein", max(totals.protein * 4, 0)), innerRadius: .ratio(0.6))
-                    .foregroundStyle(.blue)
+                    .foregroundStyle(ColorToken.proteinColor)
                 SectorMark(angle: .value("Kohlenhydrate", max(totals.carbs * 4, 0)), innerRadius: .ratio(0.6))
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(ColorToken.carbsColor)
                 SectorMark(angle: .value("Fett", max(totals.fat * 9, 0)), innerRadius: .ratio(0.6))
-                    .foregroundStyle(.pink)
+                    .foregroundStyle(ColorToken.fatColor)
             }
             .frame(height: 120)
             .accessibilityLabel("Makro-Verteilung")
@@ -172,14 +197,20 @@ public struct DashboardView<LogSheetDestination: View>: View {
                 "\(Int(totals.protein))g Protein, \(Int(totals.carbs))g Kohlenhydrate, \(Int(totals.fat))g Fett"
             )
 
-            MacroBar(title: "Protein", currentGrams: totals.protein, targetGrams: Double(totals.goals.proteinGrams), tint: .blue)
+            MacroBar(
+                title: "Protein", currentGrams: totals.protein, targetGrams: Double(totals.goals.proteinGrams),
+                tint: ColorToken.proteinColor
+            )
             MacroBar(
                 title: "Kohlenhydrate",
                 currentGrams: totals.carbs,
                 targetGrams: Double(totals.goals.carbsGrams),
-                tint: .orange
+                tint: ColorToken.carbsColor
             )
-            MacroBar(title: "Fett", currentGrams: totals.fat, targetGrams: Double(totals.goals.fatGrams), tint: .pink)
+            MacroBar(
+                title: "Fett", currentGrams: totals.fat, targetGrams: Double(totals.goals.fatGrams),
+                tint: ColorToken.fatColor
+            )
         }
         .cardBackground()
     }
