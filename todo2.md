@@ -150,32 +150,48 @@ optionale Relationships, Defaults) erhalten bleibt.
 
 **Domain:**
 
-- [ ] Entity `CalorieCore/Sources/Domain/Entities/WeightEntry.swift`: `id: UUID`, `dayKey: String`,
-      `weightKg: Double`, `recordedAt: Date`. `Equatable, Sendable`.
-- [ ] Protokoll `CalorieCore/Sources/Domain/Repositories/WeightRepository.swift`:
+- [x] Entity `CalorieCore/Sources/Domain/Entities/WeightEntry.swift`: `id: UUID`, `dayKey: String`,
+      `weightKg: Double`, `recordedAt: Date`. `Identifiable, Hashable, Sendable`.
+- [x] Protokoll `CalorieCore/Sources/Domain/Repositories/WeightRepository.swift`:
       `entries(fromDayKey:toDayKey:)`, `latest()`, `save(_:)`, `delete(entryID:)` – jeweils `async throws(DomainError)`.
-- [ ] Optional UseCase `GetWeightTrendUseCase` (gleitender Durchschnitt / Delta zur Vorwoche), analog zu `GetWeekStatsUseCase`.
+- [x] `GetWeightTrendUseCase` (Domain-Entity `WeightTrend`: `latest`, `averageWeightKg`, `deltaFromPreviousMeasurement`)
+      inkl. `static func aggregate(entries:)` als reine, testbare Funktion, analog zu `GetWeekStatsUseCase`.
+      4 Tests in `GetWeightTrendUseCaseTests` (leer, eine Messung, mehrere Messungen, Sortierunabhängigkeit).
 
 **Data:**
 
-- [ ] SwiftData-Modell `CalorieCore/Sources/Data/Persistence/SDWeightEntry.swift` (alle Properties mit Defaults, kein unique).
-- [ ] `WeightEntryMapper.swift` (Domain ↔ SD), analog zu `DiaryEntryMapper`.
-- [ ] `SwiftDataWeightRepository.swift` als `@ModelActor`, analog zu `SwiftDataDiaryRepository`.
-- [ ] Modell in `ModelContainerFactory` (App-Group- **und** In-Memory-Schema) registrieren.
+- [x] SwiftData-Modell `CalorieCore/Sources/Data/Persistence/SDWeightEntry.swift` (alle Properties mit Defaults, kein unique).
+- [x] `WeightEntryMapper.swift` (Domain ↔ SD), analog zu `DiaryEntryMapper`.
+- [x] `SwiftDataWeightRepository.swift` als `@ModelActor`, analog zu `SwiftDataDiaryRepository`. 6 Tests
+      (`SwiftDataWeightRepositoryTests`, In-Memory-SwiftData): speichern/lesen, Bereichsabfrage, `latest()`, Löschen, Update statt Duplikat.
+- [x] Modell in `ModelContainerFactory` (App-Group- **und** In-Memory-Schema) registriert:
+      `Schema([SDFood.self, SDDiaryEntry.self, SDGoals.self, SDWeightEntry.self])`.
 
 **Feature:**
 
-- [ ] Neues Package-Target `FeatureWeight` in `CalorieCore/Package.swift` (Products + Target, `dependencies: Domain, DesignSystem`).
-- [ ] `WeightViewModel.swift` (`@Observable`, `ViewState<[WeightEntry]>`), lädt Verlauf, speichert neuen Wert.
-- [ ] `WeightView.swift`:
-  - Oben große aktuelle Gewichtszahl (zentriert), darunter Delta zur letzten Messung (grün/rot).
-  - **Swift-Charts-Verlaufskurve** (`LineMark` + `PointMark`) über wählbaren Zeitraum (Woche/Monat/Alle).
-  - Sheet zum Eintragen (Zahl + Datum, Einheit kg; optional lb-Umschaltung in Settings – Post-MVP notieren).
-  - Swipe-to-delete auf Einträge.
-- [ ] Verdrahtung: `WeightRepository` in `AppContainer` erzeugen, per Init an `WeightView`/VM im `RootTabView` reichen.
-- [ ] `project.yml`: App-Target-Dependency `FeatureWeight` ergänzen, `xcodegen generate`.
-- [ ] Tests: `FeatureWeightTests` (VM mit In-Memory-Fake) + `SwiftDataWeightRepositoryTests` (In-Memory-SwiftData).
-- [ ] Build + Tests grün, Commit `feat(phase5): Gewichts-Tab mit Verlaufskurve`.
+- [x] Neues Package-Target `FeatureWeight` in `CalorieCore/Package.swift` (Products + Target + Test-Target,
+      `dependencies: Domain, DesignSystem`).
+- [x] `WeightViewModel.swift` (`@Observable @MainActor`, `ViewState<[WeightEntry]>` + `trend: WeightTrend?`),
+      lädt Verlauf (`load(daysBack:)`), speichert (`save(weightKg:date:)`) und löscht (`delete(entryID:)`) –
+      speichern/löschen stoßen `widgetRefreshing.reloadTimelines()` an. 4 Tests grün.
+- [x] `WeightView.swift`:
+  - Oben große aktuelle Gewichtszahl (zentriert, `TypographyToken.remainingKcal`), darunter Delta zur letzten
+    Messung mit Pfeil-Icon, grün (`ColorToken.positive`, neu ergänzt) bei Abnahme / orange bei Zunahme.
+  - **Swift-Charts-Verlaufskurve** (`LineMark` + `PointMark`) über wählbaren Zeitraum (Segmented Picker:
+    Woche/Monat/Alle), in `.cardBackground()`.
+  - Sheet (`WeightEntrySheet`) zum Eintragen (Zahl per `.decimalPad` + `DatePicker`, Einheit kg; lb-Umschaltung
+    bewusst weggelassen und als Post-MVP im Code kommentiert, wie im Auftrag vorgesehen).
+  - Swipe-to-delete auf Einträge in der Verlaufsliste.
+- [x] Verdrahtung: `WeightRepository` in `AppContainer` erzeugt (`SwiftDataWeightRepository`), per Init an
+      `WeightView` im `RootTabView` gereicht (ersetzt den `WeightTabPlaceholder` aus Phase 2 vollständig).
+- [x] `project.yml`: App-Target-Dependency `FeatureWeight` ergänzt, `xcodegen generate` gelaufen.
+- [x] Tests: `FeatureWeightTests` (VM mit In-Memory-Fake, 4 Tests) + `SwiftDataWeightRepositoryTests` (6 Tests).
+- [x] Visuell verifiziert per XCUITest-Screenshot (zwei Messungen 82.5 kg → 81.2 kg, Delta „↘ 1.3 kg zur
+      letzten Messung" in Grün, Chart + Verlaufsliste korrekt); temporärer Test danach gelöscht.
+- [x] Beim Aufräumen zusätzlich ein verwaistes `KalorienTracker.xcodeproj` (Rest vom Rename in Phase 1,
+      nie von Git getrackt da `*.xcodeproj` global ignoriert wird) lokal entfernt.
+- [x] Build + alle 61 Package-Tests (Domain 25 + Data 32 + FeatureWeight 4) + 2 XCUITests grün,
+      Commit `feat(phase5): Gewichts-Tab mit Verlaufskurve`.
 
 ---
 

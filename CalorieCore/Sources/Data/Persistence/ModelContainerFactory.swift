@@ -7,7 +7,7 @@ public enum ModelContainerFactory {
     }
 
     static var schema: Schema {
-        Schema([SDFood.self, SDDiaryEntry.self, SDGoals.self])
+        Schema([SDFood.self, SDDiaryEntry.self, SDGoals.self, SDWeightEntry.self])
     }
 
     /// Store liegt im App-Group-Container, damit das Widget (Phase 7) denselben Store lesen kann.

@@ -13,6 +13,7 @@ final class AppContainer {
     let goalsRepository: any GoalsRepository
     let foodCatalogRepository: any FoodCatalogRepository
     let foodDataSource: any FoodDataSource
+    let weightRepository: any WeightRepository
     let widgetRefreshing: any WidgetRefreshing
 
     init() {
@@ -26,6 +27,7 @@ final class AppContainer {
             remoteDataSource: offClient
         )
         foodDataSource = offClient
+        weightRepository = SwiftDataWeightRepository(modelContainer: modelContainer)
         widgetRefreshing = WidgetCenterRefresher()
     }
 

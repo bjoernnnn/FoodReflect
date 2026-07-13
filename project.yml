@@ -57,6 +57,8 @@ targets:
         product: FeatureScanner
       - package: CalorieCore
         product: FeatureSettings
+      - package: CalorieCore
+        product: FeatureWeight
       - target: Widget
         embed: true
 

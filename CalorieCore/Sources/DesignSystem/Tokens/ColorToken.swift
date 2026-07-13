@@ -8,6 +8,8 @@ public enum ColorToken {
     /// Türkis, angelehnt an das App-Icon (Schüssel/Blatt).
     public static let accent = Color(red: 0.086, green: 0.635, blue: 0.573)
     public static let warning = Color(red: 0.949, green: 0.302, blue: 0.263)
+    /// Für semantische Delta-Anzeigen (z. B. Gewichtsabnahme), unabhängig vom Makro-Grün.
+    public static let positive = Color(red: 0.20, green: 0.70, blue: 0.35)
 
     /// Makro-Farben – zentrale Single Source of Truth, überall (Dashboard-Ring,
     /// MacroBar, Widget) statt inline `.blue`/`.orange`/`.pink` verwendet.

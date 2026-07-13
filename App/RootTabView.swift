@@ -3,6 +3,7 @@ import FeatureDashboard
 import FeatureLog
 import FeatureScanner
 import FeatureSettings
+import FeatureWeight
 import SwiftUI
 
 /// Tab-Navigation: Heute / Verlauf / Gewicht / Einstellungen. Composition Root für alle
@@ -38,7 +39,7 @@ struct RootTabView: View {
             HistoryTabPlaceholder()
                 .tabItem { Label("Verlauf", systemImage: "chart.bar.fill") }
 
-            WeightTabPlaceholder()
+            WeightView(weightRepository: container.weightRepository, widgetRefreshing: container.widgetRefreshing)
                 .tabItem { Label("Gewicht", systemImage: "scalemass.fill") }
 
             SettingsView(goalsRepository: container.goalsRepository, widgetRefreshing: container.widgetRefreshing)
@@ -54,16 +55,6 @@ private struct HistoryTabPlaceholder: View {
         NavigationStack {
             ContentUnavailableView("Verlauf", systemImage: "chart.bar.fill", description: Text("Folgt in Phase 6."))
                 .navigationTitle("Verlauf")
-        }
-    }
-}
-
-/// Platzhalter, bis Phase 5 (todo2.md) das echte Gewichts-Tracking baut.
-private struct WeightTabPlaceholder: View {
-    var body: some View {
-        NavigationStack {
-            ContentUnavailableView("Gewicht", systemImage: "scalemass.fill", description: Text("Folgt in Phase 5."))
-                .navigationTitle("Gewicht")
         }
     }
 }

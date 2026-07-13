@@ -17,7 +17,8 @@ let package = Package(
         .library(name: "FeatureDashboard", targets: ["FeatureDashboard"]),
         .library(name: "FeatureLog", targets: ["FeatureLog"]),
         .library(name: "FeatureScanner", targets: ["FeatureScanner"]),
-        .library(name: "FeatureSettings", targets: ["FeatureSettings"])
+        .library(name: "FeatureSettings", targets: ["FeatureSettings"]),
+        .library(name: "FeatureWeight", targets: ["FeatureWeight"])
     ],
     targets: [
         // MARK: - Domain (framework-frei, keine Imports außer Foundation)
@@ -95,6 +96,17 @@ let package = Package(
         .testTarget(
             name: "FeatureSettingsTests",
             dependencies: ["FeatureSettings"],
+            swiftSettings: strictConcurrency
+        ),
+
+        .target(
+            name: "FeatureWeight",
+            dependencies: ["Domain", "DesignSystem"],
+            swiftSettings: strictConcurrency
+        ),
+        .testTarget(
+            name: "FeatureWeightTests",
+            dependencies: ["FeatureWeight"],
             swiftSettings: strictConcurrency
         )
     ]
