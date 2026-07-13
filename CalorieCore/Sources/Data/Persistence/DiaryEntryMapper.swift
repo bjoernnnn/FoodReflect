@@ -13,7 +13,9 @@ enum DiaryEntryMapper {
             protein: model.protein,
             carbs: model.carbs,
             fat: model.fat,
-            foodID: model.foodID
+            foodID: model.foodID,
+            // Unbekannte/kaputte Rohwerte fallen sicher auf .snack zurück statt zu crashen.
+            mealType: MealType(rawValue: model.mealTypeRaw) ?? .snack
         )
     }
 
@@ -28,7 +30,8 @@ enum DiaryEntryMapper {
             protein: entry.protein,
             carbs: entry.carbs,
             fat: entry.fat,
-            foodID: entry.foodID
+            foodID: entry.foodID,
+            mealTypeRaw: entry.mealType.rawValue
         )
     }
 }

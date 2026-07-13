@@ -103,7 +103,8 @@ struct QuickAddView: View {
             kcal: kcal,
             protein: Double(proteinText) ?? 0,
             carbs: Double(carbsText) ?? 0,
-            fat: Double(fatText) ?? 0
+            fat: Double(fatText) ?? 0,
+            mealType: MealType.make(for: now)
         )
         isSaving = true
         errorMessage = nil

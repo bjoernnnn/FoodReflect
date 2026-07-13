@@ -85,4 +85,22 @@ struct SwiftDataDiaryRepositoryTests {
         let loaded = try await sut.entries(on: "2026-07-13")
         #expect(loaded.isEmpty)
     }
+
+    @Test("mealType wird persistiert und beim Update mitgeführt (Roundtrip)")
+    func mealTypeRoundtrips() async throws {
+        let sut = try makeSUT()
+        var entry = DiaryEntry(
+            consumedAt: Date(), dayKey: "2026-07-13", foodName: "Haferflocken",
+            amountGrams: 50, kcal: 180, protein: 6, carbs: 30, fat: 3, mealType: .breakfast
+        )
+        try await sut.save(entry)
+        var loaded = try await sut.entries(on: "2026-07-13")
+        #expect(loaded.first?.mealType == .breakfast)
+
+        entry.mealType = .lunch
+        try await sut.save(entry)
+        loaded = try await sut.entries(on: "2026-07-13")
+        #expect(loaded.count == 1)
+        #expect(loaded.first?.mealType == .lunch)
+    }
 }

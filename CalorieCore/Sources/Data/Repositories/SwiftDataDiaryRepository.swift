@@ -42,6 +42,7 @@ public actor SwiftDataDiaryRepository: DiaryRepository {
                 existing.carbs = entry.carbs
                 existing.fat = entry.fat
                 existing.foodID = entry.foodID
+                existing.mealTypeRaw = entry.mealType.rawValue
             } else {
                 modelContext.insert(DiaryEntryMapper.toModel(entry))
             }

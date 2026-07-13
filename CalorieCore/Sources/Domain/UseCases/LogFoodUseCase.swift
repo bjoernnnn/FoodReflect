@@ -7,10 +7,13 @@ import Foundation
 public struct LogFoodUseCase: Sendable {
     public init() {}
 
+    /// `mealType == nil` leitet den Typ aus `consumedAt` ab (siehe `MealType.make`); ein explizit
+    /// übergebener Wert (z. B. aus dem Segmented Control im Log-Sheet) hat Vorrang.
     public func callAsFunction(
         food: Food,
         amountGrams: Double,
         consumedAt: Date = Date(),
+        mealType: MealType? = nil,
         calendar: Calendar = .current
     ) throws(DomainError) -> DiaryEntry {
         guard amountGrams >= 0 else { throw DomainError.invalidAmount }
@@ -25,7 +28,8 @@ public struct LogFoodUseCase: Sendable {
             protein: Self.rounded1(food.proteinPer100g * factor),
             carbs: Self.rounded1(food.carbsPer100g * factor),
             fat: Self.rounded1(food.fatPer100g * factor),
-            foodID: food.id
+            foodID: food.id,
+            mealType: mealType ?? MealType.make(for: consumedAt, calendar: calendar)
         )
     }
 

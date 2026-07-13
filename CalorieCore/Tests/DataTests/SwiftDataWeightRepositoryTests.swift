@@ -82,4 +82,20 @@ struct SwiftDataWeightRepositoryTests {
         #expect(all.count == 1)
         #expect(all.first?.weightKg == 79.5)
     }
+
+    @Test("withCreatine wird persistiert und beim Update mitgeführt (Roundtrip)")
+    func withCreatineRoundtrips() async throws {
+        let sut = try makeSUT()
+        var entry = WeightEntry(dayKey: "2026-07-13", weightKg: 80, recordedAt: Date(), withCreatine: true)
+        try await sut.save(entry)
+
+        var loaded = try await sut.entries(fromDayKey: "2026-01-01", toDayKey: "2026-12-31")
+        #expect(loaded.first?.withCreatine == true)
+
+        entry.withCreatine = false
+        try await sut.save(entry)
+        loaded = try await sut.entries(fromDayKey: "2026-01-01", toDayKey: "2026-12-31")
+        #expect(loaded.count == 1)
+        #expect(loaded.first?.withCreatine == false)
+    }
 }

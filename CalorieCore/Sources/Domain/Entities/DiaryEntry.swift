@@ -13,6 +13,7 @@ public struct DiaryEntry: Identifiable, Hashable, Sendable {
     public var carbs: Double
     public var fat: Double
     public var foodID: UUID?
+    public var mealType: MealType
 
     public init(
         id: UUID = UUID(),
@@ -24,7 +25,8 @@ public struct DiaryEntry: Identifiable, Hashable, Sendable {
         protein: Double,
         carbs: Double,
         fat: Double,
-        foodID: UUID? = nil
+        foodID: UUID? = nil,
+        mealType: MealType = .snack
     ) {
         self.id = id
         self.consumedAt = consumedAt
@@ -36,5 +38,6 @@ public struct DiaryEntry: Identifiable, Hashable, Sendable {
         self.carbs = carbs
         self.fat = fat
         self.foodID = foodID
+        self.mealType = mealType
     }
 }

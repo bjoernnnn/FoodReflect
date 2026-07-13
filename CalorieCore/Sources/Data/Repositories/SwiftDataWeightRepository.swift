@@ -34,6 +34,7 @@ public actor SwiftDataWeightRepository: WeightRepository {
                 existing.dayKey = entry.dayKey
                 existing.weightKg = entry.weightKg
                 existing.recordedAt = entry.recordedAt
+                existing.withCreatine = entry.withCreatine
             } else {
                 modelContext.insert(WeightEntryMapper.toModel(entry))
             }

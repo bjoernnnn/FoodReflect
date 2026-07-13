@@ -67,4 +67,22 @@ struct LogFoodUseCaseTests {
         food.kcalPer100g = 999 // simuliert nachträgliches Edit des Katalog-Eintrags
         #expect(entry.kcal == 539) // Snapshot bleibt unverändert
     }
+
+    @Test("Ohne expliziten mealType wird er aus consumedAt abgeleitet")
+    func mealTypeDerivedFromTime() throws {
+        var components = DateComponents()
+        components.year = 2026; components.month = 7; components.day = 13; components.hour = 8
+        let morning = try #require(utcCalendar.date(from: components))
+        let entry = try sut(food: nutella, amountGrams: 100, consumedAt: morning, calendar: utcCalendar)
+        #expect(entry.mealType == .breakfast)
+    }
+
+    @Test("Expliziter mealType hat Vorrang vor der Uhrzeit-Ableitung")
+    func explicitMealTypeWins() throws {
+        var components = DateComponents()
+        components.year = 2026; components.month = 7; components.day = 13; components.hour = 8
+        let morning = try #require(utcCalendar.date(from: components))
+        let entry = try sut(food: nutella, amountGrams: 100, consumedAt: morning, mealType: .dinner, calendar: utcCalendar)
+        #expect(entry.mealType == .dinner)
+    }
 }

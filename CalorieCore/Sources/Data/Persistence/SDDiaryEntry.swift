@@ -16,6 +16,9 @@ public final class SDDiaryEntry {
     public var carbs: Double = 0
     public var fat: Double = 0
     public var foodID: UUID?
+    /// Roh-String des `MealType`. Default sorgt dafür, dass Bestandsdaten (vor Block A)
+    /// beim Migrieren als Snack gelten, kein Nachtrag nötig.
+    public var mealTypeRaw: String = "snack"
 
     public init(
         id: UUID = UUID(),
@@ -27,7 +30,8 @@ public final class SDDiaryEntry {
         protein: Double = 0,
         carbs: Double = 0,
         fat: Double = 0,
-        foodID: UUID? = nil
+        foodID: UUID? = nil,
+        mealTypeRaw: String = "snack"
     ) {
         self.id = id
         self.consumedAt = consumedAt
@@ -39,5 +43,6 @@ public final class SDDiaryEntry {
         self.carbs = carbs
         self.fat = fat
         self.foodID = foodID
+        self.mealTypeRaw = mealTypeRaw
     }
 }
