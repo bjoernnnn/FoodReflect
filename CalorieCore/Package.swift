@@ -2,13 +2,13 @@
 import PackageDescription
 
 let strictConcurrency: [SwiftSetting] = [
-    .unsafeFlags(["-strict-concurrency=complete"]),
+    .unsafeFlags(["-strict-concurrency=complete"])
 ]
 
 let package = Package(
     name: "CalorieCore",
     platforms: [
-        .iOS(.v17),
+        .iOS(.v17)
     ],
     products: [
         .library(name: "Domain", targets: ["Domain"]),
@@ -17,7 +17,7 @@ let package = Package(
         .library(name: "FeatureDashboard", targets: ["FeatureDashboard"]),
         .library(name: "FeatureLog", targets: ["FeatureLog"]),
         .library(name: "FeatureScanner", targets: ["FeatureScanner"]),
-        .library(name: "FeatureSettings", targets: ["FeatureSettings"]),
+        .library(name: "FeatureSettings", targets: ["FeatureSettings"])
     ],
     targets: [
         // MARK: - Domain (framework-frei, keine Imports außer Foundation)
@@ -96,6 +96,6 @@ let package = Package(
             name: "FeatureSettingsTests",
             dependencies: ["FeatureSettings"],
             swiftSettings: strictConcurrency
-        ),
+        )
     ]
 )

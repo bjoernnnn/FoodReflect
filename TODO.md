@@ -180,20 +180,20 @@ Keine Schatten-Orgien, keine Verläufe, kein Konfetti.
 
 ## 6. TODO – Phasen
 
-### Phase 0 – Projektsetup
-- [ ] Xcode-Projekt `KalorienTracker` (iOS 17, SwiftUI, Swift 5.10+, Strict Concurrency: complete)
-- [ ] Lokales Package `CalorieCore` mit Targets: `Domain`, `Data`, `DesignSystem`, `FeatureDashboard`, `FeatureLog`, `FeatureScanner`, `FeatureSettings` + Test-Targets; Abhängigkeiten gemäß Abschnitt 2 verdrahten
-- [ ] App-Group-Capability + Entitlement anlegen (`group.<bundleid>`)
-- [ ] String Catalog anlegen; `.gitignore`; SwiftLint/SwiftFormat-Konfiguration (schlank)
-- [ ] `AppContainer` (Composition Root) als Skelett
-- [ ] **DoD:** leere App baut & startet, Package-Tests laufen (auch wenn leer)
+### Phase 0 – Projektsetup ✅
+- [x] Xcode-Projekt `KalorienTracker` (iOS 17, SwiftUI, Swift 5.10+, Strict Concurrency: complete) – generiert via XcodeGen aus `project.yml`
+- [x] Lokales Package `CalorieCore` mit Targets: `Domain`, `Data`, `DesignSystem`, `FeatureDashboard`, `FeatureLog`, `FeatureScanner`, `FeatureSettings` + Test-Targets; Abhängigkeiten gemäß Abschnitt 2 verdrahten
+- [x] App-Group-Capability + Entitlement anlegen (`group.<bundleid>`)
+- [x] String Catalog anlegen; `.gitignore`; SwiftLint/SwiftFormat-Konfiguration (schlank)
+- [x] `AppContainer` (Composition Root) als Skelett
+- [x] **DoD:** leere App baut & startet, Package-Tests laufen (auch wenn leer)
 
-### Phase 1 – Domain
-- [ ] Entities: `Food`, `DiaryEntry`, `MacroGoals`, `DayTotals`, `WeekStats`, `FoodSource`, `DomainError`
-- [ ] Repository-Protokolle: `DiaryRepository`, `GoalsRepository`, `FoodCatalogRepository`; Remote-Protokoll `FoodDataSource`
-- [ ] UseCases: `SuggestMacrosUseCase` (30/40/30-Formel), `LogFoodUseCase` (Menge → Snapshot-Berechnung aus per-100g), `GetDayTotalsUseCase`, `GetWeekStatsUseCase` (Ø, über/unter Ziel), `RankSearchResultsUseCase`
-- [ ] Unit-Tests für alle UseCases (Rundung, Randfälle: 0 g, Ziel 0, leere Woche, unvollständige Nährwerte)
-- [ ] **DoD:** Domain-Target framework-frei, 100 % der UseCases getestet
+### Phase 1 – Domain ✅
+- [x] Entities: `Food`, `DiaryEntry`, `MacroGoals`, `DayTotals`, `WeekStats`, `FoodSource`, `DomainError`
+- [x] Repository-Protokolle: `DiaryRepository`, `GoalsRepository`, `FoodCatalogRepository`; Remote-Protokoll `FoodDataSource`
+- [x] UseCases: `SuggestMacrosUseCase` (30/40/30-Formel), `LogFoodUseCase` (Menge → Snapshot-Berechnung aus per-100g), `GetDayTotalsUseCase`, `GetWeekStatsUseCase` (Ø, über/unter Ziel), `RankSearchResultsUseCase`
+- [x] Unit-Tests für alle UseCases (Rundung, Randfälle: 0 g, Ziel 0, leere Woche, unvollständige Nährwerte)
+- [x] **DoD:** Domain-Target framework-frei, 100 % der UseCases getestet (21 Tests grün)
 
 ### Phase 2 – Data (Persistenz)
 - [ ] SwiftData-Modelle `SDFood`, `SDDiaryEntry`, `SDGoals` (CloudKit-Regeln!), Mapper ↔ Domain

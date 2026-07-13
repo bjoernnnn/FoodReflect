@@ -6,4 +6,5 @@
 --closingparen balanced
 --self remove
 --importgrouping testable-bottom
+--trailing-commas never
 --exclude .build,CalorieCore/.build,DerivedData
