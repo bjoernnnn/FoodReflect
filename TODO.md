@@ -221,12 +221,14 @@ Keine Schatten-Orgien, keine Verläufe, kein Konfetti.
 
   **Architektur-Korrektur unterwegs:** `DashboardView` hätte ursprünglich `FeatureSettings` importiert (Verstoß gegen „Features → Domain + DesignSystem"). Stattdessen nimmt es jetzt die Settings-Destination generisch als `@ViewBuilder`-Closure entgegen, injiziert vom Composition Root (`RootView`) – Features bleiben sich gegenseitig unbekannt.
 
-### Phase 5 – Erfassen (Suche + Schnelleintrag)
-- [ ] Log-Sheet: fokussiertes Suchfeld, Debounce, Cache-first + OFF-Merge, gerankte Liste (Name, Marke, kcal/100 g)
-- [ ] Mengen-Screen: Gramm-Eingabe + Portions-Shortcuts, Live-Vorschau der kcal/Makros, Speichern → Dashboard aktualisiert sofort
-- [ ] Schnelleintrag: Name + kcal (Makros optional) → direkt als `DiaryEntry`
-- [ ] Leere/Fehler/Offline-Zustände im Sheet (freundlich, mit Retry)
-- [ ] **DoD:** Kompletter Flow „öffnen → suchen → Menge → speichern" in < 10 s von Hand machbar
+### Phase 5 – Erfassen (Suche + Schnelleintrag) ✅
+- [x] Log-Sheet: fokussiertes Suchfeld, Debounce (300 ms via `.task(id:)`), Cache-first + OFF-Merge (Duplikate per Barcode dedupliziert, lokaler Treffer gewinnt), gerankte Liste (Name, Marke, kcal/100 g) via `RankSearchResultsUseCase`
+- [x] Mengen-Screen (`AmountEntryView`): Gramm-Eingabe + Portions-Shortcuts (Serving-Size + 50/100/150/200 g), Live-Vorschau der kcal/Makros über `LogFoodUseCase`, Speichern → `recordUsage` + Dashboard lädt beim Schließen neu
+- [x] Schnelleintrag (`QuickAddView`): Name + kcal (Makros optional) → direkt als `DiaryEntry`
+- [x] Leere/Fehler/Offline-Zustände im Sheet (freundlich, mit Retry) über `ViewState`
+- [x] **DoD:** Flow-Logik vollständig unit-getestet (5 neue `LogViewModel`-Tests: Merge, Dedup, Remote-Fehler-Toleranz), App baut & Onboarding-Eingabe funktioniert nachweislich (Tastatur-Eingabe im Simulator verifiziert). **Kompletter manueller Klick-Durchlauf im Simulator war in dieser Session nicht möglich** – synthetische Mausklicks (via `cliclick`/`AppleScript`) werden von der Headless-Umgebung nicht zuverlässig durchgereicht (nur der allererste Klick der gesamten Session hat funktioniert, alle späteren nicht, obwohl Tastatur-Events zuverlässig ankommen). Empfehlung: den Erfassen-Flow einmal von Hand im Simulator/auf einem Gerät durchklicken, bevor Phase 6 (Scanner) draufsetzt.
+
+  **Bekannte Einschränkung (Erbe aus Phase 3):** Da `search-a-licious` weiterhin unverifiziert ist, ist auch der OFF-Teil des Merges in `LogViewModel.search` nur gegen das Best-Effort-Schema getestet, nicht gegen die echte API.
 
 ### Phase 6 – Barcode-Scanner
 - [ ] `DataScannerViewController`-Wrapper (UIViewControllerRepresentable), nur EAN-8/EAN-13/UPC

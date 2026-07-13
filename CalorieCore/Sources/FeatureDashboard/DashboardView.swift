@@ -4,20 +4,24 @@ import Domain
 import SwiftUI
 
 /// Root-Screen: Rest-kcal groß, Makro-Balken + Tortendiagramm, heutige Einträge.
-/// Kein TabBar – ein Screen-Prinzip. Kennt `FeatureSettings` bewusst nicht (Abhängigkeitsregel:
-/// Features → Domain + DesignSystem); die Settings-Destination wird vom Composition Root injiziert.
-public struct DashboardView<SettingsDestination: View>: View {
+/// Kein TabBar – ein Screen-Prinzip. Kennt `FeatureSettings`/`FeatureLog` bewusst nicht
+/// (Abhängigkeitsregel: Features → Domain + DesignSystem); beide Destinationen werden
+/// vom Composition Root injiziert.
+public struct DashboardView<SettingsDestination: View, LogSheetDestination: View>: View {
     @State private var viewModel: DashboardViewModel
     @State private var isShowingLogSheet = false
     private let settingsDestination: () -> SettingsDestination
+    private let logSheetDestination: () -> LogSheetDestination
 
     public init(
         diaryRepository: any DiaryRepository,
         goalsRepository: any GoalsRepository,
-        @ViewBuilder settingsDestination: @escaping () -> SettingsDestination
+        @ViewBuilder settingsDestination: @escaping () -> SettingsDestination,
+        @ViewBuilder logSheetDestination: @escaping () -> LogSheetDestination
     ) {
         _viewModel = State(initialValue: DashboardViewModel(diaryRepository: diaryRepository, goalsRepository: goalsRepository))
         self.settingsDestination = settingsDestination
+        self.logSheetDestination = logSheetDestination
     }
 
     public var body: some View {
@@ -36,12 +40,15 @@ public struct DashboardView<SettingsDestination: View>: View {
                 .safeAreaInset(edge: .bottom) {
                     logButton
                 }
-                .sheet(isPresented: $isShowingLogSheet) {
-                    // Log-Sheet (Suche/Barcode/Schnelleintrag) folgt in Phase 5.
-                    ContentUnavailableView("Erfassen", systemImage: "plus.circle", description: Text("Folgt in Phase 5."))
+                .sheet(isPresented: $isShowingLogSheet, onDismiss: reloadAfterLogSheet) {
+                    logSheetDestination()
                 }
                 .task { await viewModel.load() }
         }
+    }
+
+    private func reloadAfterLogSheet() {
+        Task { await viewModel.load() }
     }
 
     private var logButton: some View {

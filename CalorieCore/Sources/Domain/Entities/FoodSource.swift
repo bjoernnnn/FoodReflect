@@ -1,5 +1,5 @@
 /// Herkunft eines Katalog-Eintrags.
-public enum FoodSource: Equatable, Sendable {
+public enum FoodSource: Hashable, Sendable {
     case openFoodFacts(code: String)
     case manual
 }

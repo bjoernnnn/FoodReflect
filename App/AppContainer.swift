@@ -11,18 +11,21 @@ final class AppContainer {
     let diaryRepository: any DiaryRepository
     let goalsRepository: any GoalsRepository
     let foodCatalogRepository: any FoodCatalogRepository
+    let foodDataSource: any FoodDataSource
 
     private static let appGroupID = "group.com.bjoernnnn.foodreflect"
 
     init() {
         let modelContainer = Self.makeModelContainer()
+        let offClient = OFFClient()
 
         diaryRepository = SwiftDataDiaryRepository(modelContainer: modelContainer)
         goalsRepository = SwiftDataGoalsRepository(modelContainer: modelContainer)
         foodCatalogRepository = CachingFoodCatalogRepository(
             localCache: SwiftDataFoodCatalogRepository(modelContainer: modelContainer),
-            remoteDataSource: OFFClient()
+            remoteDataSource: offClient
         )
+        foodDataSource = offClient
     }
 
     /// App-Group-Store ist der Regelfall (fürs Widget in Phase 7 nötig). Fällt ohne

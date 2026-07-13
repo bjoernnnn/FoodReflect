@@ -2,7 +2,7 @@ import Foundation
 
 /// Katalog-Eintrag (Cache aus Open Food Facts oder manuell erfasst).
 /// Nährwerte werden IMMER pro 100 g/ml normalisiert gespeichert.
-public struct Food: Identifiable, Equatable, Sendable {
+public struct Food: Identifiable, Hashable, Sendable {
     public let id: UUID
     public var name: String
     public var brand: String?
