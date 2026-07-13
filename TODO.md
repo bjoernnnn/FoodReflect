@@ -42,8 +42,13 @@ Barcode oder Suche, fertig. Prioritäten: (1) Einfachheit für den Nutzer, (2) W
 ### Explizit NICHT bauen (auch nicht „nebenbei")
 Community, Rezepte, Mahlzeitenplanung, KI-Coach, Challenges, soziale Features,
 Ernährungspläne, Gamification, Kalorienverbrauch/Training, HealthKit, Siri,
-Live Activities, Fasten, Gewicht, Wasser, CloudKit-Sync, intelligente Vorschläge.
+Live Activities, Fasten, Wasser, CloudKit-Sync, intelligente Vorschläge.
 Diese Liste ist Scope-Schutz. Verstoß = Fehler.
+
+> **Update (siehe `todo2.md`, Phase 7):** Gewicht ist seit dem Redesign bewusst **in** Scope
+> (eigener Tab, voller Domain→Data→Feature-Stack) und wurde aus dieser Nicht-Ziele-Liste
+> gestrichen – der ursprüngliche Ausschluss war Teil des MVP-Scope-Schutzes, wurde aber im
+> Redesign-Auftrag explizit aufgehoben. Alle anderen Punkte der Liste gelten unverändert fort.
 
 ---
 

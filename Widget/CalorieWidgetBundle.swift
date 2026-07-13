@@ -8,7 +8,7 @@ struct CalorieWidget: Widget {
         StaticConfiguration(kind: kind, provider: CalorieTimelineProvider()) { entry in
             CalorieWidgetEntryView(entry: entry)
         }
-        .configurationDisplayName("Kalorien")
+        .configurationDisplayName("FoodReflect")
         .description("Zeigt deine verbleibenden Kalorien für heute.")
         .supportedFamilies([.systemSmall, .accessoryCircular, .accessoryRectangular])
     }

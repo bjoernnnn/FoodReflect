@@ -48,6 +48,6 @@ public struct MacroBar: View {
 }
 
 #Preview {
-    MacroBar(title: "Protein", currentGrams: 80, targetGrams: 150, tint: .blue)
+    MacroBar(title: "Protein", currentGrams: 80, targetGrams: 150, tint: ColorToken.proteinColor)
         .padding()
 }

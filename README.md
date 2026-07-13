@@ -1,8 +1,8 @@
 # FoodReflect
 
-Minimalistischer Kalorientracker (iOS 17+, SwiftUI). Ein Screen-Prinzip: Dashboard mit
-Restkalorien, blitzschnelles Erfassen per Barcode oder Suche. Vollständiger Scope, alle
-Phasen-DoDs und explizite Nicht-Ziele: siehe `TODO.md`.
+Minimalistischer Kalorientracker (iOS 17+, SwiftUI). Vier fokussierte Tabs – Heute, Verlauf,
+Gewicht, Einstellungen –, blitzschnelles Erfassen per Barcode oder Suche. Vollständiger Scope,
+alle Phasen-DoDs und explizite Nicht-Ziele: siehe `TODO.md`.
 
 ## Setup
 
@@ -44,17 +44,19 @@ swiftformat .
 
 ```
 FoodReflect/
-├── App/                  Composition Root: AppContainer (DI), RootView (Onboarding/Dashboard-Weiche)
+├── App/                  Composition Root: AppContainer (DI), RootView (Onboarding-Weiche), RootTabView (4 Tabs)
 ├── Widget/                WidgetKit-Extension, liest den App-Group-Store read-only
 └── CalorieCore/           Lokales Swift Package
     └── Sources/
         ├── Domain/         Pure Swift (nur Foundation). Entities, Repository-Protokolle, UseCases.
         ├── Data/           SwiftData-Modelle + Repositories, OpenFoodFacts-Client. Implementiert Domain-Protokolle.
         ├── DesignSystem/   Tokens (Spacing/Color/Typography), Komponenten, ViewState<Value>
-        ├── FeatureDashboard/  Dashboard: Rest-kcal-Ring, Makros, Wochen-Chart
+        ├── FeatureDashboard/  Tab „Heute": Rest-kcal-Ring, Makros, heutige Einträge, Eintrag-Detail
+        ├── FeatureHistory/    Tab „Verlauf": Wochen-/Monats-Chart, Tages-Detail
         ├── FeatureLog/        Log-Sheet: Suche, Mengeneingabe, Schnelleintrag
         ├── FeatureScanner/    Barcode-Scanner (VisionKit)
-        └── FeatureSettings/   Onboarding, Ziele-Verwaltung
+        ├── FeatureSettings/   Tab „Einstellungen": Onboarding, Ziele-Verwaltung, Über/Info
+        └── FeatureWeight/     Tab „Gewicht": Verlaufskurve, Eintragen, vollständige Historie
 ```
 
 **Abhängigkeitsregel (strikt):** `Features → Domain + DesignSystem` (nie `Data`, nie sich

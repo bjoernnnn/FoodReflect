@@ -234,14 +234,38 @@ Unterseiten, die den bestehenden Datenfluss ergänzen (jeweils per `NavigationSt
 
 ## Phase 7 – Politur & Konsistenz
 
-- [ ] Alle Makro-Farben kommen aus `ColorToken` (kein inline `.blue/.orange/.pink` mehr) – global prüfen.
-- [ ] Widget an neue Farben/Namen angleichen (Konsistenz App ↔ Home-Screen).
-- [ ] Animationen dezent halten (kein Overkill) – Ring-Trim, Tab-Wechsel, Sheet-Präsentation.
-- [ ] Accessibility: VoiceOver-Labels für neuen Ring, Gewichtskurve, Tabs; Dynamic Type XXL testen.
-- [ ] Dark Mode für alle neuen Views prüfen (Farben haben genug Kontrast auf `systemBackground`).
-- [ ] `swiftlint lint` + `swiftformat .` sauber; README-Architekturbaum um `FeatureWeight` ergänzen.
-- [ ] Alten `TODO.md`-Widerspruch zu „Gewicht" auflösen (siehe Analyse-Hinweis oben).
-- [ ] Finaler Durchlauf auf echtem Gerät (Ring, Scanner, Widget, Tabs), Commit `chore(phase7): Politur & Konsistenz`.
+- [x] Alle Makro-Farben kommen aus `ColorToken` (kein inline `.blue/.orange/.pink` mehr) – global geprüft
+      (`grep` über `CalorieCore/Sources`, `App`, `Widget`). Einziger Treffer war der `#Preview` in
+      `MacroBar.swift` (`tint: .blue`) – auf `ColorToken.proteinColor` umgestellt.
+- [x] Widget an neue Farben/Namen angleichen: Ring-Farben nutzten in `CalorieWidgetView.swift` bereits
+      `ColorToken.protein/carbs/fatColor` (identisch zum Dashboard-Ring). `configurationDisplayName` war noch
+      der alte generische Name „Kalorien" (aus KalorienTracker-Zeiten) – auf „FoodReflect" umgestellt, damit
+      die Widget-Galerie im Homescreen zum neuen Branding passt.
+- [x] Animationen geprüft: einzige explizite Animation im ganzen Projekt ist `SegmentedProgressRing`
+      (`.easeInOut` / `.easeOut(duration: 0.8)` für Ring-Trim) – bewusst dezent. Tab-Wechsel und
+      Sheet-Präsentationen nutzen die SwiftUI-Standardanimationen ohne Overrides, kein Overkill.
+- [x] Accessibility: Ring bleibt bewusst `accessibilityHidden` (Makro-Detail steht redundant als
+      `accessibilityValue` auf dem Donut-Chart darunter, keine Doppel-Ansage); Gewichtskurve/Verlauf-Chart
+      haben je ein `accessibilityLabel` + `accessibilityValue` mit Klartext-Zusammenfassung; Tabs nutzen
+      `Label(...)`, das VoiceOver automatisch benennt. Dynamic Type XXL (`accessibility-extra-extra-extra-large`)
+      per `xcrun simctl ui <device> content_size` getestet für Tages-Detail, Gewicht-Tab und Über-FoodReflect:
+      Text umbricht korrekt, keine abgeschnittenen Inhalte, Listen bleiben scrollbar.
+- [x] Dark Mode (`xcrun simctl ui <device> appearance dark`) für alle Phase-6-Views per Screenshot geprüft
+      (Tages-Detail, Gewicht-Tab, Über-FoodReflect) – guter Kontrast auf dunklem `systemBackground`,
+      Makro-/Delta-Farben bleiben gut lesbar.
+- [x] `swiftlint lint` + `swiftformat .` sauber (0 Verstöße). README-Architekturbaum aktualisiert: `FeatureWeight`
+      und `FeatureHistory` ergänzt, App-Struktur (`RootTabView`, 4 Tabs) statt der veralteten
+      Onboarding/Dashboard-Weiche-Beschreibung, Intro von „Ein-Screen-Prinzip" auf die vier Tabs korrigiert.
+- [x] Alten `TODO.md`-Widerspruch zu „Gewicht" aufgelöst: „Gewicht" aus der Nicht-Ziele-Liste (Abschnitt
+      „Explizit NICHT bauen") gestrichen, mit Hinweis-Absatz, dass der Redesign-Auftrag (`todo2.md`) den
+      ursprünglichen MVP-Ausschluss bewusst aufgehoben hat. Alle anderen Nicht-Ziele gelten unverändert fort.
+- [x] Finaler Durchlauf: kein physisches Gerät in dieser Umgebung verfügbar (siehe README-Abschnitt „Bekannte
+      Grenzen dieser Umgebung" – Scanner/Widget waren schon in der MVP-Phase nur auf echtem Gerät verifizierbar).
+      Stattdessen vollständiger Simulator-Durchlauf: Build + alle 90 Package-Tests + 2 XCUITests grün (Light Mode),
+      zusätzlich gezielte Screenshot-Verifikation in Dark Mode und bei XXL Dynamic Type für die in Phase 6 neu
+      hinzugekommenen Screens. Vor einem echten Release weiterhin auf echtem Gerät gegenprüfen (Ring, Scanner,
+      Widget, Tabs) – wie schon für die MVP-Phase dokumentiert.
+      Commit `chore(phase7): Politur & Konsistenz`.
 
 ---
 
