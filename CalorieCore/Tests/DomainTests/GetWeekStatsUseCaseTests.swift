@@ -3,7 +3,9 @@ import Testing
 
 @Suite("GetWeekStatsUseCase")
 struct GetWeekStatsUseCaseTests {
-    private let goals = MacroGoals(dailyKcal: 2000, proteinGrams: 150, carbsGrams: 200, fatGrams: 67, isCustomized: false)
+    private let goals = MacroGoals(
+        dailyKcal: 2000, proteinGrams: 150, carbsGrams: 200, fatGrams: 67, isCustomized: false
+    )
 
     private func day(_ kcal: Double) -> DayTotals {
         DayTotals(dayKey: "d", kcal: kcal, protein: 0, carbs: 0, fat: 0, goals: goals)

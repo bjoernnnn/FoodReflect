@@ -195,12 +195,12 @@ Keine Schatten-Orgien, keine Verläufe, kein Konfetti.
 - [x] Unit-Tests für alle UseCases (Rundung, Randfälle: 0 g, Ziel 0, leere Woche, unvollständige Nährwerte)
 - [x] **DoD:** Domain-Target framework-frei, 100 % der UseCases getestet (21 Tests grün)
 
-### Phase 2 – Data (Persistenz)
-- [ ] SwiftData-Modelle `SDFood`, `SDDiaryEntry`, `SDGoals` (CloudKit-Regeln!), Mapper ↔ Domain
-- [ ] `ModelContainerFactory` mit App-Group-Store-URL + In-Memory-Variante für Tests
-- [ ] Repositories implementieren; `dayKey`-basierte Tagesabfrage, Wochenabfrage
-- [ ] Repository-Tests gegen In-Memory-Container
-- [ ] **DoD:** Speichern/Laden/Löschen von Einträgen + Zielen funktioniert, Tests grün
+### Phase 2 – Data (Persistenz) ✅
+- [x] SwiftData-Modelle `SDFood`, `SDDiaryEntry`, `SDGoals` (CloudKit-Regeln!), Mapper ↔ Domain
+- [x] `ModelContainerFactory` mit App-Group-Store-URL + In-Memory-Variante für Tests
+- [x] Repositories implementieren; `dayKey`-basierte Tagesabfrage, Wochenabfrage
+- [x] Repository-Tests gegen In-Memory-Container
+- [x] **DoD:** Speichern/Laden/Löschen von Einträgen + Zielen funktioniert, Tests grün (14 Repository-Tests)
 
 ### Phase 3 – Data (Open Food Facts)
 - [ ] `OFFClient`: `fetchProduct(barcode:)` + `search(query:)`, async/await, User-Agent, `fields`-Filter, 10-s-Timeout, typisierte Fehler

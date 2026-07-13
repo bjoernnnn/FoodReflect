@@ -4,9 +4,13 @@ import Testing
 
 @Suite("GetDayTotalsUseCase")
 struct GetDayTotalsUseCaseTests {
-    private let goals = MacroGoals(dailyKcal: 2000, proteinGrams: 150, carbsGrams: 200, fatGrams: 67, isCustomized: false)
+    private let goals = MacroGoals(
+        dailyKcal: 2000, proteinGrams: 150, carbsGrams: 200, fatGrams: 67, isCustomized: false
+    )
 
-    private func entry(dayKey: String, kcal: Double, protein: Double = 0, carbs: Double = 0, fat: Double = 0) -> DiaryEntry {
+    private func entry(
+        dayKey: String, kcal: Double, protein: Double = 0, carbs: Double = 0, fat: Double = 0
+    ) -> DiaryEntry {
         DiaryEntry(
             consumedAt: Date(),
             dayKey: dayKey,
