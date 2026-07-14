@@ -221,13 +221,13 @@ Regeln:
 Zifferblatt-Editor, Deep Links öffnen die richtigen (leeren) Screens.
 
 ### Phase 9.2 – Datenmodell & iPhone-Features
-- [ ] Entities `WeightEntry`, `MealTemplate`, `QuickListEntry` in Domain
-- [ ] Repository-Protokolle + UseCases (siehe Abschnitt 2), Unit-Tests
-- [ ] SwiftData-Modelle + Repository-Implementierungen (CloudKit-kompatibel), Tests mit In-Memory-Store
-- [ ] iPhone: Gerichte-Verwaltung (CRUD, Nährwert-Summierung)
-- [ ] iPhone: „Schnellauswahl bearbeiten" mit Drag & Drop, Ordnern, Hinzufügen-Flow
-- [ ] iPhone: Gewichtsliste (read-only Anzeige, Kreatin-Badge)
-- [ ] `TODO.md`-Ausschlussliste aktualisieren (Gewicht raus, Verweis auf dieses Dokument)
+- [x] Entities `WeightEntry`, `MealTemplate`, `QuickListEntry` in Domain
+- [x] Repository-Protokolle + UseCases (siehe Abschnitt 2), Unit-Tests
+- [x] SwiftData-Modelle + Repository-Implementierungen (CloudKit-kompatibel), Tests mit In-Memory-Store
+- [x] iPhone: Gerichte-Verwaltung (CRUD, Nährwert-Summierung)
+- [x] iPhone: „Schnellauswahl bearbeiten" mit Drag & Drop, Ordnern, Hinzufügen-Flow
+- [x] iPhone: Gewichtsliste inkl. Kreatin-Erfassung (Toggle im Sheet) + Kreatin-Badge
+- [x] `TODO.md`-Ausschlussliste aktualisieren (Gewicht raus, Verweis auf dieses Dokument)
 
 **Definition of Done:** Gerichte anlegbar, Schnellauswahl frei sortierbar (Reihenfolge
 persistiert), alles ohne Watch nutzbar und getestet.
