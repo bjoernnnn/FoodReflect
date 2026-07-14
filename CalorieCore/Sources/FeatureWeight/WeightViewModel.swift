@@ -7,6 +7,8 @@ import Foundation
 public final class WeightViewModel {
     public private(set) var state: ViewState<[WeightEntry]> = .loading
     public private(set) var trend: WeightTrend?
+    /// Geglättete Wochenmittel-Trendlinie für den Chart (leer bei < 1 Messung).
+    public private(set) var weeklyAverages: [WeeklyWeightAverage] = []
 
     private let weightRepository: any WeightRepository
     private let widgetRefreshing: any WidgetRefreshing
@@ -34,6 +36,7 @@ public final class WeightViewModel {
             let entries = try await weightRepository.entries(fromDayKey: fromKey, toDayKey: toKey)
             let sorted = entries.sorted { $0.recordedAt < $1.recordedAt }
             trend = GetWeightTrendUseCase.aggregate(entries: sorted)
+            weeklyAverages = GetWeightTrendUseCase.weeklyAverages(entries: sorted, calendar: calendar)
             state = sorted.isEmpty ? .empty : .loaded(sorted)
         } catch {
             state = .error(message: "Gewichtsdaten konnten nicht geladen werden.")

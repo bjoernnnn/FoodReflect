@@ -43,4 +43,24 @@ struct GetWeightTrendUseCaseTests {
         let trend = GetWeightTrendUseCase.aggregate(entries: [entry(80, daysAgo: 1), entry(81, daysAgo: 0)])
         #expect(trend.deltaFromPreviousMeasurement == 1)
     }
+
+    @Test("Wochenmittel gruppiert je Kalenderwoche und mittelt, aufsteigend sortiert")
+    func weeklyAveragesGroupAndSort() {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.firstWeekday = 2 // Montag, deterministisch fürs Gruppieren
+        // Zwei Messungen in dieser Woche, eine vor ~3 Wochen.
+        let thisWeek = [entry(80, daysAgo: 0), entry(82, daysAgo: 1)]
+        let earlier = entry(85, daysAgo: 21)
+        let averages = GetWeightTrendUseCase.weeklyAverages(entries: thisWeek + [earlier], calendar: calendar)
+
+        #expect(averages.count == 2)
+        #expect(averages[0].weekStart < averages[1].weekStart)
+        #expect(averages[0].averageKg == 85) // ältere Woche, eine Messung
+        #expect(averages[1].averageKg == 81) // (80 + 82) / 2
+    }
+
+    @Test("Ohne Messungen ist das Wochenmittel leer")
+    func weeklyAveragesEmpty() {
+        #expect(GetWeightTrendUseCase.weeklyAverages(entries: []).isEmpty)
+    }
 }

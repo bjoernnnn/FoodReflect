@@ -30,11 +30,12 @@ struct SnapshotEntry: TimelineEntry {
 
 struct SnapshotProvider: TimelineProvider {
     func placeholder(in _: Context) -> SnapshotEntry {
-        SnapshotEntry(date: .now, snapshot: .empty)
+        SnapshotEntry(date: .now, snapshot: .sample)
     }
 
-    func getSnapshot(in _: Context, completion: @escaping (SnapshotEntry) -> Void) {
-        completion(load())
+    func getSnapshot(in context: Context, completion: @escaping (SnapshotEntry) -> Void) {
+        // In der Zifferblatt-Galerie repräsentative Beispieldaten zeigen, sonst den echten Cache.
+        completion(context.isPreview ? SnapshotEntry(date: .now, snapshot: .sample) : load())
     }
 
     func getTimeline(in _: Context, completion: @escaping (Timeline<SnapshotEntry>) -> Void) {

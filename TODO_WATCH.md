@@ -260,7 +260,7 @@ erzeugt → landet nach Reconnect genau einmal im iPhone-Tagebuch.
 - [x] Schnellauswahl: Icon-Komplikation mit Deep Link
 - [x] Kalorien-Ring: Gauge + Modus Übrig/Gegessen, `WatchKcalFormatter` („1,1K", 4 Tests)
 - [x] Timeline-Reloads: nach Sync-Events (`WidgetCenter`) + Mitternachts-Eintrag (`.after(nextMidnight)`)
-- [~] Snapshot-/Preview-Varianten für die Zifferblatt-Galerie (offen, kosmetisch)
+- [x] Snapshot-/Preview-Varianten für die Zifferblatt-Galerie (`WatchSnapshot.sample`, siehe 9.7)
 > Komplikationen lesen den gecachten `WatchSnapshot` aus der App Group (`AppGroupSnapshotStore`).
 > Verifiziert per watchOS-Simulator-Build. **Offen (iPhone-Glue, hardware-verifiziert):** `PhoneSyncService`
 > in `AppContainer` verdrahten – Snapshot bei jeder Änderung pushen + Events (logWeight/logQuick/revert)
@@ -271,7 +271,8 @@ erzeugt → landet nach Reconnect genau einmal im iPhone-Tagebuch.
 - [x] Haptik-/Animations-Feinschliff gemäß Abschnitt 7 (`.sensoryFeedback`, `.contentTransition(.numericText())`, Fortschrittsring)
 - [x] Fehlerzustände: iPhone nicht erreichbar – `transferUserInfo` puffert automatisch (kein Blocker); Watch zeigt optimistischen Zustand
 - [x] Unit-Tests: Formatierer („1,1K", „81,4"), Sync-Idempotenz (Doppel-Delivery), QuickList-Sortierung (Mapper-Reihenfolge)
-- [~] Optional: Gewichts-Trend-Chart auf dem iPhone – Gewichts-Tab hat bereits einen Linienchart; Wochenmittel offen (optional)
+- [x] Optional: Gewichts-Trend-Chart auf dem iPhone – Wochenmittel-Trendlinie (gestrichelt) im Gewichts-Chart, `GetWeightTrendUseCase.weeklyAverages` + Tests
+- [x] Optional: Snapshot-/Preview-Varianten für die Zifferblatt-Galerie (`WatchSnapshot.sample`, `context.isPreview`)
 > Verifiziert: iOS-Build (mit Koordinator), watchOS-Sim-Build, Package-Suite grün (20 Sync-Tests).
 > **Verbleibende Hardware-Verifikation:** echte WCSession-Zustellung + Komplikationen auf dem Zifferblatt
 > nur mit gekoppelter Apple Watch prüfbar. Der gesamte davon entkoppelte Code (DTOs, Coder, Idempotenz,

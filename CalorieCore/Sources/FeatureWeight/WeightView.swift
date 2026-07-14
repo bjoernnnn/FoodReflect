@@ -156,11 +156,24 @@ public struct WeightView: View {
                 PointMark(x: .value("Datum", entry.recordedAt), y: .value("kg", entry.weightKg))
                     .foregroundStyle(ColorToken.accent)
             }
+            ForEach(weeklyAveragesInRange) { average in
+                LineMark(x: .value("Woche", average.weekStart), y: .value("Wochenmittel", average.averageKg))
+                    .foregroundStyle(ColorToken.secondaryText)
+                    .lineStyle(StrokeStyle(lineWidth: 2, dash: [4, 3]))
+                    .interpolationMethod(.monotone)
+            }
         }
         .frame(height: 180)
-        .accessibilityLabel("Gewichtsverlauf")
+        .accessibilityLabel("Gewichtsverlauf mit Wochenmittel")
         .accessibilityValue(chartAccessibilitySummary(entries))
         .cardBackground()
+    }
+
+    /// Wochenmittel-Punkte im aktuell gewählten Zeitraum (gestrichelte Trendlinie im Chart).
+    private var weeklyAveragesInRange: [WeeklyWeightAverage] {
+        guard let days = selectedPeriod.days else { return viewModel.weeklyAverages }
+        let cutoff = Calendar.current.date(byAdding: .day, value: -days, to: Date()) ?? Date()
+        return viewModel.weeklyAverages.filter { $0.weekStart >= cutoff }
     }
 
     private func chartAccessibilitySummary(_ entries: [WeightEntry]) -> String {

@@ -59,6 +59,19 @@ public struct WatchSnapshot: Codable, Equatable, Sendable {
         quickItems: [],
         calorieDisplayMode: .remaining
     )
+
+    /// Repräsentative Beispieldaten für die Komplikations-Galerie / SwiftUI-Previews.
+    public static let sample = WatchSnapshot(
+        consumedKcal: 1450,
+        goalKcal: 2200,
+        proteinGrams: 95,
+        carbsGrams: 160,
+        fatGrams: 48,
+        latestWeightKg: 81.4,
+        latestCreatine: true,
+        quickItems: [],
+        calorieDisplayMode: .remaining
+    )
 }
 
 /// Ein flacher Eintrag der Schnellauswahl für die Watch – Ordner werden beim Mapping
