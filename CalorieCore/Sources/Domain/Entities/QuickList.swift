@@ -2,7 +2,7 @@ import Foundation
 
 /// Ein loggbares Blatt der Schnellauswahl: entweder ein Gericht (Referenz auf `MealTemplate`)
 /// oder ein einzelnes Lebensmittel (mit fixiertem Nährwert-Snapshot, offline loggbar).
-public enum QuickListLeaf: Identifiable, Hashable, Sendable {
+public enum QuickListLeaf: Identifiable, Hashable, Sendable, Codable {
     case meal(id: UUID, templateID: UUID)
     case food(id: UUID, item: MealTemplateItem)
 
@@ -16,7 +16,7 @@ public enum QuickListLeaf: Identifiable, Hashable, Sendable {
 
 /// Ein Eintrag der Schnellauswahl auf oberster Ebene: ein Blatt oder ein Ordner
 /// (max. eine Ebene tief, enthält nur Blätter – siehe Spezifikation Abschnitt 2).
-public enum QuickListEntry: Identifiable, Hashable, Sendable {
+public enum QuickListEntry: Identifiable, Hashable, Sendable, Codable {
     case leaf(QuickListLeaf)
     case folder(id: UUID, name: String, items: [QuickListLeaf])
 

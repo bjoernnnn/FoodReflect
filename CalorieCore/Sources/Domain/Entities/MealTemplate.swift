@@ -3,7 +3,7 @@ import Foundation
 /// Ein Bestandteil eines `MealTemplate` – trägt einen denormalisierten Nährwert-Snapshot,
 /// damit ein Gericht stabil bleibt, auch wenn sich der Katalog-`Food` später ändert
 /// (gleiche Philosophie wie `DiaryEntry`). `foodID` ist nur eine lose Referenz.
-public struct MealTemplateItem: Identifiable, Hashable, Sendable {
+public struct MealTemplateItem: Identifiable, Hashable, Sendable, Codable {
     public let id: UUID
     public var foodID: UUID?
     public var foodName: String
