@@ -1,8 +1,10 @@
 import SwiftUI
+import Sync
 
-/// Start-Navigation der Watch-App. Zeigt die drei Einstiege (Gewicht, Schnellauswahl, Kalorien)
-/// und schiebt bei Deep Links direkt den passenden Screen auf den Stack.
+/// Start-Navigation der Watch-App. Zeigt die drei Einstiege und schiebt bei Deep Links direkt
+/// den passenden Screen auf den Stack.
 struct WatchRootView: View {
+    let sync: WatchSyncService
     @Binding var route: WatchRoute?
 
     var body: some View {
@@ -15,33 +17,18 @@ struct WatchRootView: View {
                 }
             }
             .navigationTitle("FoodReflect")
-            .navigationDestination(for: WatchRoute.self) { route in
-                WatchPlaceholderScreen(route: route)
-            }
-            .navigationDestination(item: $route) { route in
-                WatchPlaceholderScreen(route: route)
-            }
+            .navigationDestination(for: WatchRoute.self) { destination(for: $0) }
+            .navigationDestination(item: $route) { destination(for: $0) }
         }
     }
-}
 
-/// Platzhalter, bis die echten Screens in Phase 9.4–9.6 kommen. Dunkel & minimal (Abschnitt 7).
-struct WatchPlaceholderScreen: View {
-    let route: WatchRoute
-
-    var body: some View {
-        VStack(spacing: 8) {
-            Image(systemName: route.iconSystemName)
-                .font(.system(size: 32, weight: .semibold))
-            Text(route.title)
-                .font(.headline)
-            Text("Kommt in einer späteren Phase.")
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
+    @ViewBuilder
+    private func destination(for route: WatchRoute) -> some View {
+        switch route {
+        case .weight: WatchWeightView(sync: sync)
+        case .quicklog: WatchQuickSelectView(sync: sync)
+        case .dashboard: WatchDashboardView(sync: sync)
         }
-        .padding()
-        .navigationTitle(route.title)
     }
 }
 

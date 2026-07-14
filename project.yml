@@ -141,6 +141,8 @@ targets:
     dependencies:
       - package: CalorieCore
         product: Domain
+      - package: CalorieCore
+        product: Sync
       - target: FoodReflectWatchWidgets
         embed: true
 
@@ -173,6 +175,11 @@ targets:
         CURRENT_PROJECT_VERSION: "1"
         TARGETED_DEVICE_FAMILY: "4"
         SKIP_INSTALL: true
+    dependencies:
+      - package: CalorieCore
+        product: Domain
+      - package: CalorieCore
+        product: Sync
 
   FoodReflectUITests:
     type: bundle.ui-testing

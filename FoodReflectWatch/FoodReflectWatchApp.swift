@@ -1,15 +1,22 @@
 import SwiftUI
+import Sync
+import WidgetKit
 
-/// Einstiegspunkt der Watch-App. Phase 9.1 liefert nur das Grundgerüst: eine Navigation, die
-/// per Deep Link aus den Komplikationen den passenden (vorerst Platzhalter-)Screen öffnet.
-/// Sync (9.3) und echte Screens (9.4–9.6) folgen in späteren Phasen.
+/// Einstiegspunkt der Watch-App. Besitzt den `WatchSyncService` (autoritativer Snapshot vom
+/// iPhone + Event-Versand) und öffnet per Deep Link aus den Komplikationen den passenden Screen.
 @main
 struct FoodReflectWatchApp: App {
+    @State private var sync = WatchSyncService(
+        snapshotStore: AppGroupSnapshotStore(suiteName: WatchTheme.appGroupID),
+        onSnapshotChanged: { WidgetCenter.shared.reloadAllTimelines() }
+    )
     @State private var route: WatchRoute?
 
     var body: some Scene {
         WindowGroup {
-            WatchRootView(route: $route)
+            WatchRootView(sync: sync, route: $route)
+                .tint(WatchTheme.accent)
+                .onAppear { sync.activate() }
                 .onOpenURL { url in
                     if let parsed = WatchRoute(url: url) {
                         route = parsed

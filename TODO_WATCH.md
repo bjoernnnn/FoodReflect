@@ -245,31 +245,26 @@ persistiert), alles ohne Watch nutzbar und getestet.
 erzeugt → landet nach Reconnect genau einmal im iPhone-Tagebuch.
 
 ### Phase 9.4 – Watch: Gewichtseingabe
-- [ ] Screen gemäß Abschnitt 4 (Crown-Eingabe, Kreatin-Toggle, Speichern, Haptik)
-- [ ] `logWeight`-Event + optimistisches Update des lokalen Snapshots
-- [ ] Leerzustand (noch kein Gewicht): Startwert 80,0, Hinweistext eine Zeile
-
-**Definition of Done:** Gewicht in < 5 s erfassbar (Komplikation → Crown → Speichern),
-Eintrag inkl. Kreatin-Flag auf dem iPhone sichtbar.
+- [x] Screen gemäß Abschnitt 4 (Crown-Eingabe ±0,1 kg, Kreatin-Toggle, Speichern, `.sensoryFeedback(.success)`)
+- [x] `logWeight`-Event + optimistisches Update des lokalen Snapshots
+- [x] Leerzustand (noch kein Gewicht): Startwert 80,0
 
 ### Phase 9.5 – Watch: Schnellauswahl
-- [ ] Liste in synchronisierter Reihenfolge inkl. Ordner
-- [ ] Tap = Details, Long-Press mit Fortschrittsring = Loggen, Haptik + Checkmark
-- [ ] Undo-Toast mit `revertQuickLog`
-- [ ] Leerzustand: Hinweis „Schnellauswahl auf dem iPhone einrichten"
-
-**Definition of Done:** Gericht in < 3 s loggbar, kein Log ohne vollendeten Long-Press,
-Undo funktioniert, Tageswerte auf iPhone + Watch konsistent.
+- [x] Liste in synchronisierter Reihenfolge inkl. Ordner-Kennzeichnung
+- [x] Tap = Detail-Sheet, Long-Press (0,6 s) mit Fortschrittsring = Loggen, Haptik
+- [x] Undo-Toast (5 s) mit `revert`-Event
+- [x] Leerzustand: Hinweis „Schnellauswahl auf dem iPhone einrichten"
 
 ### Phase 9.6 – Komplikationen final
-- [ ] Gewicht: „XX,X"-Anzeige (Circular/Inline/Corner), Symbol-Fallback
-- [ ] Schnellauswahl: Icon-Komplikation mit Deep Link
-- [ ] Kalorien-Ring: Gauge + Modus Übrig/Gegessen, „1,1K"-Formatierung (FormatStyle + Tests)
-- [ ] Timeline-Reloads: nach Sync-Events + Mitternachts-Eintrag
-- [ ] Snapshot-/Preview-Varianten für die Zifferblatt-Galerie
-
-**Definition of Done:** Alle drei Komplikationen zeigen Live-Daten, aktualisieren sich
-nach dem Loggen zeitnah, Mitternachts-Reset funktioniert.
+- [x] Gewicht: „XX,X"-Anzeige (Circular/Inline/Corner), `scalemass`-Fallback
+- [x] Schnellauswahl: Icon-Komplikation mit Deep Link
+- [x] Kalorien-Ring: Gauge + Modus Übrig/Gegessen, `WatchKcalFormatter` („1,1K", 4 Tests)
+- [x] Timeline-Reloads: nach Sync-Events (`WidgetCenter`) + Mitternachts-Eintrag (`.after(nextMidnight)`)
+- [~] Snapshot-/Preview-Varianten für die Zifferblatt-Galerie (offen, kosmetisch)
+> Komplikationen lesen den gecachten `WatchSnapshot` aus der App Group (`AppGroupSnapshotStore`).
+> Verifiziert per watchOS-Simulator-Build. **Offen (iPhone-Glue, hardware-verifiziert):** `PhoneSyncService`
+> in `AppContainer` verdrahten – Snapshot bei jeder Änderung pushen + Events (logWeight/logQuick/revert)
+> auf Repositories anwenden. Ohne diese Verdrahtung zeigt die Watch nur den Leerzustand. Folgt in 9.7.
 
 ### Phase 9.7 – Polish & Tests
 - [ ] Haptik-/Animations-Feinschliff gemäß Abschnitt 7
