@@ -25,6 +25,10 @@ App/Info.plist
 App/FoodReflect.entitlements
 Widget/Info.plist
 Widget/Widget.entitlements
+FoodReflectWatch/Info.plist
+FoodReflectWatch/FoodReflectWatch.entitlements
+FoodReflectWatchWidgets/Info.plist
+FoodReflectWatchWidgets/FoodReflectWatchWidgets.entitlements
 
 # Swift Package Manager
 .build/

@@ -8,7 +8,8 @@ let strictConcurrency: [SwiftSetting] = [
 let package = Package(
     name: "CalorieCore",
     platforms: [
-        .iOS(.v17)
+        .iOS(.v17),
+        .watchOS(.v10)
     ],
     products: [
         .library(name: "Domain", targets: ["Domain"]),

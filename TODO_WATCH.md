@@ -210,12 +210,14 @@ Regeln:
 ## 8. Phasenplan
 
 ### Phase 9.1 – Targets & Grundgerüst
-- [ ] watchOS-App-Target `KalorienTrackerWatch` (watchOS 10.0) anlegen
-- [ ] Widget-Extension `KalorienTrackerWatchWidgets` anlegen
-- [ ] App Group **innerhalb watchOS** (App ↔ Widget-Extension) konfigurieren
-- [ ] `CalorieCore/Domain` im watchOS-Target einbinden (baut ohne Änderungen)
-- [ ] URL-Scheme `kalorientracker://` + Routing-Stub in der Watch-App
-- [ ] Platzhalter-Komplikationen (alle drei, statischer Inhalt) auf dem Zifferblatt sichtbar
+- [x] watchOS-App-Target `FoodReflectWatch` (watchOS 10.0) anlegen
+- [x] Widget-Extension `FoodReflectWatchWidgets` anlegen
+- [x] App Group **innerhalb watchOS** (App ↔ Widget-Extension) konfigurieren (`group.com.bjoernnnn.foodreflect.watch`)
+- [x] `CalorieCore/Domain` im watchOS-Target einbinden (Package: `.watchOS(.v10)` ergänzt, baut ohne Code-Änderungen)
+- [x] URL-Scheme `foodreflect://` + Routing-Stub (`WatchRoute`) in der Watch-App
+- [x] Platzhalter-Komplikationen (alle drei, statischer Inhalt) mit Deep Links
+> Namensanpassung an aktuelles Projekt: `KalorienTracker*` → `FoodReflect*`, Scheme `kalorientracker://` → `foodreflect://`.
+> Verifiziert per Simulator-Build (Apple Watch Series 11, watchOS 26.5) + unveränderter iOS-Build. End-to-End auf echter Hardware steht aus (Signing/Pairing lokal).
 
 **Definition of Done:** Beide Targets bauen, Platzhalter-Komplikationen erscheinen im
 Zifferblatt-Editor, Deep Links öffnen die richtigen (leeren) Screens.
