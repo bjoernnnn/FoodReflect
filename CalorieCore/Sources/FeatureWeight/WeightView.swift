@@ -52,8 +52,8 @@ public struct WeightView: View {
                     }
                 }
                 .sheet(isPresented: $isShowingAddSheet) {
-                    WeightEntrySheet { weightKg, date in
-                        await viewModel.save(weightKg: weightKg, date: date)
+                    WeightEntrySheet(initialCreatine: lastCreatineFlag) { weightKg, date, withCreatine in
+                        await viewModel.save(weightKg: weightKg, date: date, withCreatine: withCreatine)
                         isShowingAddSheet = false
                     }
                 }
@@ -169,14 +169,28 @@ public struct WeightView: View {
     }
 
     private func row(for entry: WeightEntry) -> some View {
-        HStack {
+        HStack(spacing: Spacing.sm) {
             Text(entry.recordedAt, format: .dateTime.day().month().year())
                 .font(TypographyToken.body)
+            if entry.withCreatine {
+                Text("Kreatin")
+                    .font(TypographyToken.caption)
+                    .padding(.horizontal, Spacing.sm)
+                    .padding(.vertical, 2)
+                    .background(ColorToken.accent.opacity(0.15), in: Capsule())
+                    .foregroundStyle(ColorToken.accent)
+                    .accessibilityLabel("mit Kreatin")
+            }
             Spacer()
             Text(formattedWeight(entry.weightKg))
                 .font(TypographyToken.body)
         }
         .accessibilityElement(children: .combine)
+    }
+
+    /// Neue Messungen übernehmen standardmäßig den Kreatin-Status der letzten Messung.
+    private var lastCreatineFlag: Bool {
+        viewModel.trend?.latest?.withCreatine ?? false
     }
 
     private func formattedWeight(_ weightKg: Double?) -> String {

@@ -2,6 +2,7 @@ import DesignSystem
 import FeatureDashboard
 import FeatureHistory
 import FeatureLog
+import FeatureMeals
 import FeatureScanner
 import FeatureSettings
 import FeatureWeight
@@ -43,8 +44,26 @@ struct RootTabView: View {
             WeightView(weightRepository: container.weightRepository, widgetRefreshing: container.widgetRefreshing)
                 .tabItem { Label("Gewicht", systemImage: "scalemass.fill") }
 
-            SettingsView(goalsRepository: container.goalsRepository, widgetRefreshing: container.widgetRefreshing)
-                .tabItem { Label("Einstellungen", systemImage: "gearshape.fill") }
+            SettingsView(
+                goalsRepository: container.goalsRepository,
+                widgetRefreshing: container.widgetRefreshing,
+                mealsDestination: {
+                    MealTemplatesView(
+                        mealTemplateRepository: container.mealTemplateRepository,
+                        foodCatalogRepository: container.foodCatalogRepository,
+                        foodDataSource: container.foodDataSource
+                    )
+                },
+                quickListDestination: {
+                    QuickListEditorView(
+                        quickListRepository: container.quickListRepository,
+                        mealTemplateRepository: container.mealTemplateRepository,
+                        foodCatalogRepository: container.foodCatalogRepository,
+                        foodDataSource: container.foodDataSource
+                    )
+                }
+            )
+            .tabItem { Label("Einstellungen", systemImage: "gearshape.fill") }
         }
         .tint(ColorToken.accent)
     }

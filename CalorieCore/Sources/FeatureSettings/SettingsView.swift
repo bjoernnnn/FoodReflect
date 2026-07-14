@@ -6,15 +6,27 @@ enum SettingsPushDestination: Hashable {
     case about
 }
 
-public struct SettingsView: View {
+/// Die Gerichte-/Schnellauswahl-Screens leben in `FeatureMeals`; Features kennen einander nicht,
+/// daher werden sie generisch als `@ViewBuilder`-Closures vom Composition Root injiziert.
+public struct SettingsView<MealsDestination: View, QuickListDestination: View>: View {
     @State private var viewModel: SettingsViewModel
     @State private var dailyKcalText = ""
     @State private var proteinText = ""
     @State private var carbsText = ""
     @State private var fatText = ""
 
-    public init(goalsRepository: any GoalsRepository, widgetRefreshing: any WidgetRefreshing) {
+    private let mealsDestination: () -> MealsDestination
+    private let quickListDestination: () -> QuickListDestination
+
+    public init(
+        goalsRepository: any GoalsRepository,
+        widgetRefreshing: any WidgetRefreshing,
+        @ViewBuilder mealsDestination: @escaping () -> MealsDestination,
+        @ViewBuilder quickListDestination: @escaping () -> QuickListDestination
+    ) {
         _viewModel = State(initialValue: SettingsViewModel(goalsRepository: goalsRepository, widgetRefreshing: widgetRefreshing))
+        self.mealsDestination = mealsDestination
+        self.quickListDestination = quickListDestination
     }
 
     public var body: some View {
@@ -47,6 +59,23 @@ public struct SettingsView: View {
             }
         case let .loaded(goals):
             form(for: goals)
+        }
+    }
+
+    private var mealsAndQuickListSection: some View {
+        Section("Gerichte & Schnellauswahl") {
+            NavigationLink {
+                mealsDestination()
+            } label: {
+                Label("Gerichte", systemImage: "fork.knife")
+            }
+            .accessibilityIdentifier("settings.mealsLink")
+            NavigationLink {
+                quickListDestination()
+            } label: {
+                Label("Schnellauswahl", systemImage: "bolt")
+            }
+            .accessibilityIdentifier("settings.quickListLink")
         }
     }
 
@@ -85,6 +114,7 @@ public struct SettingsView: View {
                     Task { await viewModel.restoreAutoSuggestion(dailyKcal: Int(dailyKcalText) ?? goals.dailyKcal) }
                 }
             }
+            mealsAndQuickListSection
             Section("Info") {
                 NavigationLink("Über FoodReflect", value: SettingsPushDestination.about)
             }

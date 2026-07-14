@@ -17,6 +17,7 @@ let package = Package(
         .library(name: "FeatureDashboard", targets: ["FeatureDashboard"]),
         .library(name: "FeatureHistory", targets: ["FeatureHistory"]),
         .library(name: "FeatureLog", targets: ["FeatureLog"]),
+        .library(name: "FeatureMeals", targets: ["FeatureMeals"]),
         .library(name: "FeatureScanner", targets: ["FeatureScanner"]),
         .library(name: "FeatureSettings", targets: ["FeatureSettings"]),
         .library(name: "FeatureWeight", targets: ["FeatureWeight"])
@@ -86,6 +87,17 @@ let package = Package(
         .testTarget(
             name: "FeatureLogTests",
             dependencies: ["FeatureLog"],
+            swiftSettings: strictConcurrency
+        ),
+
+        .target(
+            name: "FeatureMeals",
+            dependencies: ["Domain", "DesignSystem"],
+            swiftSettings: strictConcurrency
+        ),
+        .testTarget(
+            name: "FeatureMealsTests",
+            dependencies: ["FeatureMeals"],
             swiftSettings: strictConcurrency
         ),
 

@@ -15,8 +15,8 @@ struct WeightHistoryView: View {
             .navigationBarTitleDisplayMode(.inline)
             .task { await viewModel.loadAll() }
             .sheet(item: $editingEntry) { entry in
-                WeightEntrySheet(existingEntry: entry) { weightKg, date in
-                    await viewModel.save(entryID: entry.id, weightKg: weightKg, date: date)
+                WeightEntrySheet(existingEntry: entry) { weightKg, date, withCreatine in
+                    await viewModel.save(entryID: entry.id, weightKg: weightKg, date: date, withCreatine: withCreatine)
                     editingEntry = nil
                 }
             }
@@ -59,9 +59,18 @@ struct WeightHistoryView: View {
     }
 
     private func row(for entry: WeightEntry) -> some View {
-        HStack {
+        HStack(spacing: Spacing.sm) {
             Text(entry.recordedAt, format: .dateTime.day().month().year())
                 .font(TypographyToken.body)
+            if entry.withCreatine {
+                Text("Kreatin")
+                    .font(TypographyToken.caption)
+                    .padding(.horizontal, Spacing.sm)
+                    .padding(.vertical, 2)
+                    .background(ColorToken.accent.opacity(0.15), in: Capsule())
+                    .foregroundStyle(ColorToken.accent)
+                    .accessibilityLabel("mit Kreatin")
+            }
             Spacer()
             Text(String(format: "%.1f kg", entry.weightKg))
                 .font(TypographyToken.body)

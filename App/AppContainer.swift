@@ -14,6 +14,8 @@ final class AppContainer {
     let foodCatalogRepository: any FoodCatalogRepository
     let foodDataSource: any FoodDataSource
     let weightRepository: any WeightRepository
+    let mealTemplateRepository: any MealTemplateRepository
+    let quickListRepository: any QuickListRepository
     let widgetRefreshing: any WidgetRefreshing
 
     init() {
@@ -28,6 +30,8 @@ final class AppContainer {
         )
         foodDataSource = offClient
         weightRepository = SwiftDataWeightRepository(modelContainer: modelContainer)
+        mealTemplateRepository = SwiftDataMealTemplateRepository(modelContainer: modelContainer)
+        quickListRepository = SwiftDataQuickListRepository(modelContainer: modelContainer)
         widgetRefreshing = WidgetCenterRefresher()
     }
 

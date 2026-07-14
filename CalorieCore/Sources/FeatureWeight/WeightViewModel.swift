@@ -47,9 +47,13 @@ public final class WeightViewModel {
 
     /// Ohne `entryID` wird eine neue Messung angelegt, mit `entryID` eine bestehende ersetzt
     /// (Repository macht Upsert-by-id).
-    public func save(entryID: UUID? = nil, weightKg: Double, date: Date) async {
+    public func save(entryID: UUID? = nil, weightKg: Double, date: Date, withCreatine: Bool = false) async {
         let entry = WeightEntry(
-            id: entryID ?? UUID(), dayKey: DayKey.make(for: date, calendar: calendar), weightKg: weightKg, recordedAt: date
+            id: entryID ?? UUID(),
+            dayKey: DayKey.make(for: date, calendar: calendar),
+            weightKg: weightKg,
+            recordedAt: date,
+            withCreatine: withCreatine
         )
         do {
             try await weightRepository.save(entry)
