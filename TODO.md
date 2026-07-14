@@ -64,6 +64,10 @@ Diese Liste ist Scope-Schutz. Verstoß = Fehler.
 > Nicht-Ziele-Liste (Scope-Schutz für den MVP). Der Redesign-Auftrag (Teil B, Phase 5) hat diesen Ausschluss
 > bewusst aufgehoben und Gewichts-Tracking als vollwertigen, eigenen Tab spezifiziert – seitdem ist Gewicht
 > **in** Scope und wurde aus dieser Liste gestrichen. Alle anderen Punkte gelten unverändert fort.
+>
+> **Apple Watch (Phase 9):** detailliert in `TODO_WATCH.md` (Gewichts-Komplikation mit Kreatin-Merker,
+> Schnellauswahl/QuickList, Kalorien-Ring). Gerichte/Mahlzeiten-Vorlagen (`MealTemplate`) und die Gewichts-
+> Kreatin-Info sind dafür ebenfalls **in** Scope. HealthKit bleibt außen vor (Post-Phase-9).
 
 ---
 
