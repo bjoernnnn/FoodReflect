@@ -48,6 +48,8 @@ targets:
       - package: CalorieCore
         product: Data
       - package: CalorieCore
+        product: Sync
+      - package: CalorieCore
         product: DesignSystem
       - package: CalorieCore
         product: FeatureDashboard

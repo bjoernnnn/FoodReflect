@@ -17,6 +17,7 @@ final class AppContainer {
     let mealTemplateRepository: any MealTemplateRepository
     let quickListRepository: any QuickListRepository
     let widgetRefreshing: any WidgetRefreshing
+    let watchSync: WatchSyncCoordinator
 
     init() {
         let modelContainer = Self.makeModelContainer()
@@ -30,9 +31,18 @@ final class AppContainer {
         )
         foodDataSource = offClient
         weightRepository = SwiftDataWeightRepository(modelContainer: modelContainer)
-        mealTemplateRepository = SwiftDataMealTemplateRepository(modelContainer: modelContainer)
-        quickListRepository = SwiftDataQuickListRepository(modelContainer: modelContainer)
+        let mealTemplateRepo = SwiftDataMealTemplateRepository(modelContainer: modelContainer)
+        let quickListRepo = SwiftDataQuickListRepository(modelContainer: modelContainer)
+        mealTemplateRepository = mealTemplateRepo
+        quickListRepository = quickListRepo
         widgetRefreshing = WidgetCenterRefresher()
+        watchSync = WatchSyncCoordinator(
+            diaryRepository: diaryRepository,
+            weightRepository: weightRepository,
+            mealTemplateRepository: mealTemplateRepo,
+            quickListRepository: quickListRepo,
+            goalsRepository: goalsRepository
+        )
     }
 
     /// App-Group-Store ist der Regelfall (fürs Widget nötig, liest denselben Store read-only).

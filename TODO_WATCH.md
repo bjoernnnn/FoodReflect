@@ -267,10 +267,15 @@ erzeugt → landet nach Reconnect genau einmal im iPhone-Tagebuch.
 > auf Repositories anwenden. Ohne diese Verdrahtung zeigt die Watch nur den Leerzustand. Folgt in 9.7.
 
 ### Phase 9.7 – Polish & Tests
-- [ ] Haptik-/Animations-Feinschliff gemäß Abschnitt 7
-- [ ] Fehlerzustände: iPhone nicht erreichbar (Queue-Hinweis, kein Blocker)
-- [ ] Unit-Tests: Formatierer („1,1K", „81,4"), Sync-Idempotenz, QuickList-Sortierung
-- [ ] Optional: Gewichts-Trend-Chart auf dem iPhone (Swift Charts, Wochenmittel)
+- [x] iPhone-Glue: `WatchSyncCoordinator` in `AppContainer` – wendet Watch-Events auf die Repositories an (logWeight/logQuick/revert inkl. Undo-Tracking) und pusht Snapshots (App-Start + Rückkehr in den Vordergrund)
+- [x] Haptik-/Animations-Feinschliff gemäß Abschnitt 7 (`.sensoryFeedback`, `.contentTransition(.numericText())`, Fortschrittsring)
+- [x] Fehlerzustände: iPhone nicht erreichbar – `transferUserInfo` puffert automatisch (kein Blocker); Watch zeigt optimistischen Zustand
+- [x] Unit-Tests: Formatierer („1,1K", „81,4"), Sync-Idempotenz (Doppel-Delivery), QuickList-Sortierung (Mapper-Reihenfolge)
+- [~] Optional: Gewichts-Trend-Chart auf dem iPhone – Gewichts-Tab hat bereits einen Linienchart; Wochenmittel offen (optional)
+> Verifiziert: iOS-Build (mit Koordinator), watchOS-Sim-Build, Package-Suite grün (20 Sync-Tests).
+> **Verbleibende Hardware-Verifikation:** echte WCSession-Zustellung + Komplikationen auf dem Zifferblatt
+> nur mit gekoppelter Apple Watch prüfbar. Der gesamte davon entkoppelte Code (DTOs, Coder, Idempotenz,
+> Mapping, Formatierer, Event-Anwendung) ist getestet bzw. baubar.
 
 **Definition of Done:** Alle Tests grün, App-Review-tauglicher Zustand beider Targets.
 
