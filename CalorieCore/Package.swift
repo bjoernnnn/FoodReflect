@@ -14,6 +14,7 @@ let package = Package(
     products: [
         .library(name: "Domain", targets: ["Domain"]),
         .library(name: "Data", targets: ["Data"]),
+        .library(name: "Sync", targets: ["Sync"]),
         .library(name: "DesignSystem", targets: ["DesignSystem"]),
         .library(name: "FeatureDashboard", targets: ["FeatureDashboard"]),
         .library(name: "FeatureHistory", targets: ["FeatureHistory"]),
@@ -46,6 +47,19 @@ let package = Package(
         .testTarget(
             name: "DataTests",
             dependencies: ["Data", "Domain"],
+            swiftSettings: strictConcurrency
+        ),
+
+        // MARK: - Sync (WatchConnectivity-DTOs + Dienste, iOS + watchOS)
+
+        .target(
+            name: "Sync",
+            dependencies: ["Domain"],
+            swiftSettings: strictConcurrency
+        ),
+        .testTarget(
+            name: "SyncTests",
+            dependencies: ["Sync", "Domain"],
             swiftSettings: strictConcurrency
         ),
 

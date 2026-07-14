@@ -235,10 +235,11 @@ Zifferblatt-Editor, Deep Links öffnen die richtigen (leeren) Screens.
 persistiert), alles ohne Watch nutzbar und getestet.
 
 ### Phase 9.3 – Sync-Schicht
-- [ ] `PhoneSyncService` + `WatchSyncService` (WCSession, ApplicationContext + UserInfo-Queue)
-- [ ] Payload-Schema mit `schemaVersion`, Codable-DTOs, Mapping-Tests
-- [ ] Idempotenz via Event-UUID (Doppel-Delivery-Test)
-- [ ] Watch-Cache (Snapshot + Offline-Event-Queue) in der App Group
+- [x] `PhoneSyncService` + `WatchSyncService` (WCSession, ApplicationContext + UserInfo-Queue) – Struktur steht, kompiliert iOS + watchOS; **Zustellung nur mit gekoppelter Hardware verifizierbar**
+- [x] Payload-Schema mit `schemaVersion`, Codable-DTOs, Mapping-Tests (`SyncCoder`, Versions-Guard, Round-Trip)
+- [x] Idempotenz via Event-UUID (`EventDeduplicator` + Doppel-Delivery-Test)
+- [~] Watch-Cache (Snapshot + Offline-Event-Queue) in der App Group – Protokolle (`SnapshotStore`, `ProcessedEventStore`) + In-Memory-Default vorhanden; konkrete App-Group-Persistenz kommt mit der Watch-UI (9.4+). Offline-Event-Queue übernimmt WCSession (`transferUserInfo`).
+> Neues Modul `Sync` (CalorieCore, iOS + watchOS), 16 Unit-Tests grün. WCSession-Glue in `#if os(...)`-Dateien, damit beide Plattformen bauen.
 
 **Definition of Done:** Änderung am iPhone erscheint auf der Watch; Watch-Event offline
 erzeugt → landet nach Reconnect genau einmal im iPhone-Tagebuch.
